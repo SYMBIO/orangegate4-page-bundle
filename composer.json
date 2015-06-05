@@ -14,8 +14,7 @@
     ],
     "require": {
         "sonata-project/page-bundle": "~2.4@dev",
-        "symbio/orangegate4-admin-bundle": "~1.0@dev",
-        "symbio/orangegate4-seo-bundle": "~1.0@dev"
+        "symbio/orangegate4-admin-bundle": "~1.0@dev"
     },
     "require-dev": {
     },
