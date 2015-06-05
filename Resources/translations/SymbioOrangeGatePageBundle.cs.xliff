@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="cs" datatype="plaintext" original="file.ext">
+    <body>
+      <trans-unit id="header.admin_dashboard">
+        <source>header.admin_dashboard</source>
+        <target>Dashboard</target>
+      </trans-unit>
+      <trans-unit id="header.other">
+        <source>header.other</source>
+        <target>Další</target>
+      </trans-unit>
+      <trans-unit id="header.edit_page">
+        <source>header.edit_page</source>
+        <target>Upravit metadata</target>
+      </trans-unit>
+      <trans-unit id="header.create_snapshot">
+        <source>header.create_snapshot</source>
+        <target>Publikovat stránku</target>
+      </trans-unit>
+      <trans-unit id="header.view_all_pages">
+        <source>header.view_all_pages</source>
+        <target>Všechny stránky</target>
+      </trans-unit>
+      <trans-unit id="header.view_all_exceptions">
+        <source>header.view_all_exceptions</source>
+        <target>Zobrazit chyby</target>
+      </trans-unit>
+      <trans-unit id="header.compose_page">
+        <source>header.compose_page</source>
+        <target>Upravit obsah stránky</target>
+      </trans-unit>
+      <trans-unit id="header.page_is_disabled">
+        <source>header.page_is_disabled</source>
+        <target>Stránka je zakázána</target>
+      </trans-unit>
+      <trans-unit id="header.show_zone">
+        <source>header.show_zone</source>
+        <target>Zobrazit zóny</target>
+      </trans-unit>
+      <trans-unit id="header.switch_user_exit">
+        <source>header.switch_user_exit</source>
+        <target>Vrátit se na původního uživatele</target>
+      </trans-unit>
+      <trans-unit id="link_action_create_subpage">
+        <source>link_action_create_subpage</source>
+        <target>Vytvořit podstránku</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

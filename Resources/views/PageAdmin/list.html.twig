@@ -1,0 +1,9 @@
+{% extends 'SymbioOrangeGateAdminBundle:CRUD:base_list.html.twig' %}
+
+{% block tab_menu %}
+    {% include 'SonataPageBundle:PageAdmin:list_tab_menu.html.twig' with {
+        'mode':   'list',
+        'action': action,
+        'admin':  admin
+    } only %}
+{% endblock %}

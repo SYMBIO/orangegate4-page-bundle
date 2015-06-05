@@ -1,0 +1,161 @@
+{% extends 'SonataAdminBundle:CRUD:action.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/symbioorangegatepage/js/composer.js') }}" type="text/javascript"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/sonatapage/composer.css') }}" type="text/css" media="screen" />
+{% endblock %}
+
+{% block title %}
+    {{ 'page.compose_page'|trans({}, 'SonataPageBundle') }} "{{ page.name }}" <small>[template: <b>{{ template.name }}</b>]</small>
+{% endblock%}
+
+{% block navbar_title %}
+    {{ block('title') }}
+{% endblock %}
+
+{% block actions %}
+    {% include 'SymbioOrangeGatePageBundle:Button:create_button.html.twig' %}
+    <div class="btn-group">{% spaceless %}
+        {% include 'SymbioOrangeGateAdminBundle:Button:show_button.html.twig' %}
+        {% include 'SymbioOrangeGateAdminBundle:Button:history_button.html.twig' %}
+        {% include 'SymbioOrangeGateAdminBundle:Button:acl_button.html.twig' %}
+    {% endspaceless %}</div>
+    {#% include 'SymbioOrangeGateAdminBundle:Button:list_button.html.twig' %#}
+{% endblock %}
+
+{% block body_attributes %}class="sonata-bc skin-blue page-composer-page sonata-ba-no-side-menu"{% endblock %}
+
+{% block content %}
+    <div class="page-composer">
+
+        {% if containers|length == 0 %}
+
+            <div class="alert alert-warning">
+
+                <strong>Warning!</strong> Before using the composer option, you need to configure the template layout.
+                <br />The configuration must be done in the <code>sonata_page.templates</code> section.<br />
+
+            <br />
+            See a complete exemple here:
+
+
+<pre>
+sonata_page:
+    # [...]
+    templates:
+        default:
+            path: 'ApplicationSonataPageBundle::demo_layout.html.twig'
+            name: 'default'
+            containers:
+                header:
+                    name: Header
+                content_top:
+                    name: Top content
+                content:
+                    name: Main content
+                content_bottom:
+                    name: Bottom content
+                footer:
+                    name: Footer
+            matrix:
+                layout: |
+                    HHHHHHHH
+                    TTTTBBBB
+                    TTTTBBBB
+                    TTTTBBBB
+                    TTTTBBBB
+                    CCCCCCCC
+                    CCCCCCCC
+                    FFFFFFFF
+
+                mapping:
+                    H: header
+                    T: content_top
+                    C: content
+                    B: content_bottom
+                    F: footer
+</pre>
+            </div>
+
+        {% else %}
+            <div class="row row-fluid">
+                <div class="col-md-4 span4">
+                    <div class="page-composer__page-preview" style="border:3px solid #404040">
+                        <div class="page-composer__page-preview__containers">
+                            {% for container in containers %}
+                                {% if container.block is defined and container.block %}
+                                    <a class="page-composer__page-preview__container block-preview-{{ container.block.id }}"
+                                       data-block-id="{{ container.block.id }}"
+                                       style="top:{{ container.area.placement.y }}%;right:{{ container.area.placement.right }}%;bottom:{{ container.area.placement.bottom }}%;left:{{ container.area.placement.x }}%"
+                                       href="{{ path('admin_orangegate_page_page_compose_container_show', { 'id': container.block.id }) }}"
+                                    >
+                                        <div class="page-composer__page-preview__container__content">
+                                            <strong>{{ container.block.name|default(container.area.name) }}</strong><br>
+                                            <small><span class="child-count">{{ container.block.children|length }}</span> blocks</small>
+                                            <span class="page-composer__page-preview__add-block">
+                                                <i class="fa fa-circle-o"></i>
+                                                <i class="fa fa-dot-circle-o"></i>
+                                            </span>
+                                            <span class="drop-indicator">
+                                                <span class="fa fa-download"></span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                {% else %}
+                                    <div class="page-composer__page-preview__container--no-block"
+                                         style="top:{{ container.area.placement.y }}%;right:{{ container.area.placement.right }}%;bottom:{{ container.area.placement.bottom }}%;left:{{ container.area.placement.x }}%"
+                                    >
+                                        <div class="page-composer__page-preview__container__content">
+                                            <strong>{{ container.area.name }}</strong>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    {% if orphanContainers|length > 0 %}
+                        <div class="page-composer__orphan-containers">
+                            <h3 class="page-composer__orphan-containers__header">{{ 'page.orphan_containers'|trans({}, 'SonataPageBundle') }}</h3>
+                            <ul>
+                                {% for orphanContainer in orphanContainers %}
+                                    <li class="page-composer__orphan-container block-preview-{{ orphanContainer.id }}"
+                                        data-block-id="{{ orphanContainer.id }}"
+                                        href="{{ path('admin_orangegate_page_page_compose_container_show', { 'id': orphanContainer.id }) }}"
+                                    >
+                                        <strong>{{ orphanContainer.name|default(orphanContainer.type) }}</strong><br>
+                                        <small><span class="child-count">{{ orphanContainer.children|length }}</span> blocks</small>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-8 span8">
+                    <div class="page-composer__dyn-content">
+                    </div>
+                </div>
+            </div>
+            <script>
+                $(document).ready(function () {
+                    var composer = new PageComposer({{ page.id }});
+
+                    window.SonataPageComposer  = composer;
+
+                    composer.csrfTokens = {{ csrfTokens|json_encode()|raw }};
+                    composer.setRoute('block_edit',            "{{ path('admin_orangegate_page_block_edit',   { 'id': 'BLOCK_ID' }) }}");
+                    composer.setRoute('block_remove',          "{{ path('admin_orangegate_page_block_delete', { 'id': 'BLOCK_ID' }) }}");
+                    composer.setRoute('save_blocks_positions', "{{ path('admin_orangegate_page_block_savePosition') }}");
+                    composer.setRoute('block_switch_parent',   "{{ path('admin_orangegate_page_block_switchParent') }}");
+                });
+            </script>
+        {% endif %}
+    </div>
+
+
+{% endblock %}

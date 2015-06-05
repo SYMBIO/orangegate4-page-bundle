@@ -1,0 +1,32 @@
+{
+    "name": "symbio/orangegate4-page-bundle",
+    "type": "symfony-bundle",
+    "description": "SYMBIO OrangeGatePageBundle",
+    "keywords": ["Admin Generator", "admin", "orangegate", "bootstrap"],
+    "homepage": "http://www.symbiodigital.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "SYMBIO Developers",
+            "email": "dev@symbiodigital.com",
+            "homepage": "http://www.symbiodigital.com"
+        }
+    ],
+    "require": {
+        "sonata-project/page-bundle": "~2.4@dev",
+        "symbio/orangegate4-admin-bundle": "~1.0@dev",
+        "symbio/orangegate4-seo-bundle": "~1.0@dev"
+    },
+    "require-dev": {
+    },
+    "suggest": {
+    },
+    "autoload": {
+        "psr-4": { "Symbio\\OrangeGate\\PageBundle\\": "" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
