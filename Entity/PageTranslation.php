@@ -113,7 +113,7 @@ class PageTranslation extends AbstractTranslation
      * Set locale
      *
      * @param string $locale
-     * @return ProductCategoryTranslation
+     * @return PageTranslation
      */
     public function setLocale($locale)
     {
@@ -135,8 +135,8 @@ class PageTranslation extends AbstractTranslation
     /**
      * Set object
      *
-     * @param \Agrofert\Bundle\LovochemieBundle\Entity\ProductCategory $object
-     * @return ProductCategoryTranslation
+     * @param \Symbio\OrangeGate\PageBundle\Entity\Page $object
+     * @return PageTranslation
      */
     public function setObject($object)
     {
@@ -148,7 +148,7 @@ class PageTranslation extends AbstractTranslation
     /**
      * Get object
      *
-     * @return \Agrofert\Bundle\LovochemieBundle\Entity\ProductCategory
+     * @return \Symbio\OrangeGate\PageBundle\Entity\Page
      */
     public function getObject()
     {

@@ -64,7 +64,7 @@ class BlockTranslation extends AbstractTranslation
      * Set locale
      *
      * @param string $locale
-     * @return ProductCategoryTranslation
+     * @return BlockTranslation
      */
     public function setLocale($locale)
     {
@@ -86,8 +86,8 @@ class BlockTranslation extends AbstractTranslation
     /**
      * Set object
      *
-     * @param \Agrofert\Bundle\LovochemieBundle\Entity\ProductCategory $object
-     * @return ProductCategoryTranslation
+     * @param \Symbio\OrangeGate\PageBundle\Entity\Block $object
+     * @return BlockTranslation
      */
     public function setObject($object)
     {
@@ -99,7 +99,7 @@ class BlockTranslation extends AbstractTranslation
     /**
      * Get object
      *
-     * @return \Agrofert\Bundle\LovochemieBundle\Entity\ProductCategory
+     * @return \Symbio\OrangeGate\PageBundle\Entity\Block
      */
     public function getObject()
     {

@@ -124,7 +124,7 @@ class PageAdmin extends BaseAdmin
                 ->with($this->trans('form_page.group_basic_label'))
                     ->add('translations', 'orangegate_translations', array(
                         'label' => false,
-                        'locales' => array('cs', 'en', 'de'),
+						'locales' => $this->getConfigurationPool()->getContainer()->getParameter('symbio.orangegate.locales'),
                         'fields' => array(
                                 'enabled' => array(
                                     'field_type' => 'checkbox',
@@ -164,8 +164,8 @@ class PageAdmin extends BaseAdmin
             ;
         }
 
-        if ($this->hasSubject() && !$this->getSubject()->getId() && !$this->getSubject()->getSite()) {
-            $formMapper
+		if ($this->hasSubject() && !$this->getSubject()->getId()) {
+				$formMapper
                 ->with($this->trans('form_page.group_settings_label'))
                     ->add('site', null, array('required' => true, 'read_only' => true))
                 ->end();
@@ -183,13 +183,13 @@ class PageAdmin extends BaseAdmin
                     //'filter_choice' => array('root' => $this->isGranted('EDIT') ? false : $this->getSubject->getParent()),
                 ), array(
                     'link_parameters' => array(
-                        'siteId' => $this->getSubject() ? $this->getSubject()->getSite()->getId() : null
+                        'site Id' => $this->getSubject() ? $this->getSubject()->getSite()->getId() : null
                     )
                 ))
                 ->add('icon', 'sonata_type_model_list', array('required' => false), array(
                     'placeholder' => 'No image selected',
                     'link_parameters' => array(
-                        'context' => 'lovochemie',
+                        'context' => 'arcdata',
                         'provider' => 'sonata.media.provider.image',
                         'category' => 108,
                         'hide_context' => true,
@@ -440,6 +440,6 @@ class PageAdmin extends BaseAdmin
 
     public function getLanguages()
     {
-        return array('cs', 'en', 'de');
+		return $this->getConfigurationPool()->getContainer()->getParameter('symbio.orangegate.locales');
     }
 }

@@ -78,7 +78,7 @@ class SnapshotTranslation extends AbstractTranslation
      * Set locale
      *
      * @param string $locale
-     * @return ProductCategoryTranslation
+     * @return SnapshotTranslation
      */
     public function setLocale($locale)
     {
@@ -100,8 +100,8 @@ class SnapshotTranslation extends AbstractTranslation
     /**
      * Set object
      *
-     * @param \Agrofert\Bundle\LovochemieBundle\Entity\ProductCategory $object
-     * @return ProductCategoryTranslation
+     * @param \Symbio\OrangeGate\PageBundle\Entity\Snapshot $object
+     * @return SnapshotTranslation
      */
     public function setObject($object)
     {
@@ -113,7 +113,7 @@ class SnapshotTranslation extends AbstractTranslation
     /**
      * Get object
      *
-     * @return \Agrofert\Bundle\LovochemieBundle\Entity\ProductCategory
+     * @return \Symbio\OrangeGate\PageBundle\Entity\Snapshot
      */
     public function getObject()
     {
