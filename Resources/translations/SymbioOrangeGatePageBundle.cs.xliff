@@ -10,6 +10,10 @@
         <source>header.other</source>
         <target>Další</target>
       </trans-unit>
+      <trans-unit id="header.page">
+        <source>header.page</source>
+        <target>Stránka</target>
+      </trans-unit>
       <trans-unit id="header.edit_page">
         <source>header.edit_page</source>
         <target>Upravit metadata</target>
@@ -28,7 +32,7 @@
       </trans-unit>
       <trans-unit id="header.compose_page">
         <source>header.compose_page</source>
-        <target>Upravit obsah stránky</target>
+        <target>Upravit obsah</target>
       </trans-unit>
       <trans-unit id="header.page_is_disabled">
         <source>header.page_is_disabled</source>
