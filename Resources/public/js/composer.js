@@ -592,8 +592,12 @@
                 $blockTypeSelectorLoader.css('display', 'inline-block');
 
                 var blockType = $blockTypeSelectorSelect.val();
+                var blockTypeLabel = $blockTypeSelectorSelect.find('option:selected').text();
                 $.ajax({
-                    url:     blockTypeSelectorUrl + '?type=' + blockType,
+                    url:     blockTypeSelectorUrl,
+                    data:    {
+                        type: blockType
+                    },
                     success: function (resp) {
                         $blockTypeSelectorLoader.hide();
 
@@ -601,6 +605,7 @@
                         loadedEvent.response    = resp;
                         loadedEvent.containerId = event.containerId;
                         loadedEvent.blockType   = blockType;
+                        loadedEvent.blockTypeLabel = blockTypeLabel;
                         $(self).trigger(loadedEvent);
                     }
                 });
