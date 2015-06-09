@@ -149,6 +149,60 @@ class PageAdminController extends Controller
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function treeAction(Request $request = null)
+    {
+        if (false === $this->admin->isGranted('LIST')) {
+            throw new AccessDeniedException();
+        }
+
+        $sites = $this->get('sonata.page.manager.site')->findBy(array());
+        $pageManager = $this->get('sonata.page.manager.page');
+
+        $currentSite = null;
+        $session = $this->get('session');
+        $siteId = $request->get('site');
+
+        if (!$siteId) {
+            $currentSite = $session->get('sonata_site');
+        } else {
+            foreach ($sites as $site) {
+                if ($siteId && $site->getId() === $siteId) {
+                    $currentSite = $site;
+                } elseif (!$siteId && $site->getIsDefault()) {
+                    $currentSite = $site;
+                }
+            }
+
+            if (!$currentSite && count($sites) == 1) {
+                $currentSite = $sites[0];
+            }
+        }
+
+        if ($currentSite) {
+            $pages = $pageManager->loadPages($currentSite);
+            $session->set('sonata_site', $currentSite);
+        } else {
+            $pages = array();
+        }
+
+        $datagrid = $this->admin->getDatagrid();
+        $formView = $datagrid->getForm()->createView();
+
+        $this->get('twig')->getExtension('form')->renderer->setTheme($formView, $this->admin->getFilterTheme());
+
+        return $this->render('SonataPageBundle:PageAdmin:tree.html.twig', array(
+            'action'      => 'tree',
+            'sites'       => $sites,
+            'currentSite' => $currentSite,
+            'pages'       => $pages,
+            'form'        => $formView,
+            'csrf_token'  => $this->getCsrfToken('sonata.batch'),
+        ));
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws NotFoundHttpException
