@@ -1,30 +1,13 @@
 <?php
 
-/*
- * This file is part of the Sonata package.
- *
- * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Symbio\OrangeGate\PageBundle\Admin;
 
 use Doctrine\ORM\EntityRepository;
-use Symbio\OrangeGate\AdminBundle\Admin\Admin as BaseAdmin;
+use Sonata\PageBundle\Admin\BaseBlockAdmin as BaseAdmin;
 use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Show\ShowMapper;
-use Sonata\AdminBundle\Datagrid\DatagridMapper;
-
-use Sonata\Cache\CacheManagerInterface;
-
-use Sonata\BlockBundle\Block\BlockServiceManagerInterface;
 use Sonata\PageBundle\Model\PageInterface;
-use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Show\ShowMapper;
 
 /**
  * Admin class for the Block model
@@ -35,19 +18,6 @@ class BlockAdmin extends BaseAdmin
 {
     protected $parentAssociationMapping = 'page';
 
-    /**
-     * @var BlockServiceManagerInterface
-     */
-    protected $blockManager;
-
-    protected $cacheManager;
-
-    protected $inValidate = false;
-
-    /**
-     * @var array
-     */
-    protected $containerBlockTypes = array();
 
     /**
      * {@inheritdoc}
@@ -61,19 +31,6 @@ class BlockAdmin extends BaseAdmin
         $collection->add('switchParent', 'switch-parent');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function configureListFields(ListMapper $listMapper)
-    {
-        $listMapper
-            ->addIdentifier('type')
-            ->add('name')
-            ->add('enabled')
-            ->add('updatedAt')
-            ->add('position')
-        ;
-    }
 
     protected function configureShowFields(ShowMapper $showMapper)
     {
@@ -87,17 +44,6 @@ class BlockAdmin extends BaseAdmin
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function configureDatagridFilters(DatagridMapper $datagridMapper)
-    {
-        $datagridMapper
-            ->add('name')
-            ->add('enabled')
-            ->add('type')
-        ;
-    }
 
     /**
      * {@inheritdoc}
@@ -147,6 +93,8 @@ class BlockAdmin extends BaseAdmin
                                 'types' => $containerBlockTypes,
                             ));
                     }
+                ),array(
+                    'admin_code' => $this->getCode()
                 ));
             }
 
@@ -211,112 +159,5 @@ class BlockAdmin extends BaseAdmin
         }
 
         return $subject;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function preUpdate($object)
-    {
-        $this->blockManager->get($object)->preUpdate($object);
-
-        // fix weird bug with setter object not being call
-        $object->setChildren($object->getChildren());
-        $object->getPage()->setEdited(true);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function postUpdate($object)
-    {
-        $this->blockManager->get($object)->postUpdate($object);
-
-        $service = $this->blockManager->get($object);
-
-        $this->cacheManager->invalidate($service->getCacheKeys($object));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function prePersist($object)
-    {
-        $this->blockManager->get($object)->prePersist($object);
-
-        $object->getPage()->setEdited(true);
-
-        foreach ($object->getTranslations() as $trans) {
-            $trans->setObject($object);
-        }
-
-        // fix weird bug with setter object not being call
-        $object->setChildren($object->getChildren());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function postPersist($object)
-    {
-        $this->blockManager->get($object)->postPersist($object);
-
-        $service = $this->blockManager->get($object);
-
-        $this->cacheManager->invalidate($service->getCacheKeys($object));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function preRemove($object)
-    {
-        $this->blockManager->get($object)->preRemove($object);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function postRemove($object)
-    {
-        $this->blockManager->get($object)->postRemove($object);
-    }
-
-    /**
-     * @param \Sonata\BlockBundle\Block\BlockServiceManagerInterface $blockManager
-     */
-    public function setBlockManager(BlockServiceManagerInterface $blockManager)
-    {
-        $this->blockManager = $blockManager;
-    }
-
-    /**
-     * @param \Sonata\Cache\CacheManagerInterface $cacheManager
-     */
-    public function setCacheManager(CacheManagerInterface $cacheManager)
-    {
-        $this->cacheManager = $cacheManager;
-    }
-
-    /**
-     * @param array $containerBlockTypes
-     */
-    public function setContainerBlockTypes(array $containerBlockTypes)
-    {
-        $this->containerBlockTypes = $containerBlockTypes;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPersistentParameters()
-    {
-        if (!$this->hasRequest()) {
-            return array();
-        }
-
-        return array(
-            'type'  => $this->getRequest()->get('type'),
-        );
     }
 }
