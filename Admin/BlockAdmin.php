@@ -8,6 +8,7 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\PageBundle\Model\PageInterface;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Admin class for the Block model
