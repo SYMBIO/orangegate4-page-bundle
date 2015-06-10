@@ -47,4 +47,14 @@ class HostPathSiteSelector extends ParentSiteSelector
 
         return false;
     }
+
+    /**
+     * @param Request $request
+     *
+     * @return SiteInterface[]
+     */
+    protected function getSites(Request $request)
+    {
+        return $this->siteManager->findByHost($request->getHost());
+    }
 }

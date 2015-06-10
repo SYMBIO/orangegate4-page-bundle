@@ -43,7 +43,7 @@ class CmsManagerSelector extends BaseCmsManagerSelector
      */
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
     {
-        if ($this->getSecurityContext()->getToken() && $this->getSecurityContext()->isGranted('ROLE_SONATA_PAGE_ADMIN_PAGE_GUEST')) {
+        if ($this->getSecurityContext()->getToken() && $this->getSecurityContext()->isGranted('ROLE_SONATA_ADMIN')) {
             $this->getSession()->set('sonata/page/isEditor', true);
         }
     }
