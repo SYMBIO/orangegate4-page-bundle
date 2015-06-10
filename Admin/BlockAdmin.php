@@ -48,6 +48,25 @@ class BlockAdmin extends BaseAdmin
     /**
      * {@inheritdoc}
      */
+    public function prePersist($object)
+    {
+        $this->blockManager->get($object)->prePersist($object);
+
+        $object->getPage()->setEdited(true);
+
+        foreach ($object->getTranslations() as $trans) {
+            $trans->setObject($object);
+        }
+
+        // fix weird bug with setter object not being call
+        $object->setChildren($object->getChildren());
+    }
+
+
+
+    /**
+     * {@inheritdoc}
+     */
     public function getObject($id)
     {
         $subject = $this->getModelManager()->find($this->getClass(), $id);
