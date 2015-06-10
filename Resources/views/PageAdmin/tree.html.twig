@@ -1,4 +1,14 @@
-{% extends 'SonataAdminBundle:CRUD:base_list.html.twig' %}
+{% extends 'SymbioOrangeGateAdminBundle:CRUD:base_list.html.twig' %}
+
+{% block actions %}
+    {% spaceless %}
+        {% if admin.hasRoute('create') and admin.isGranted('CREATE')%}
+            <a class="btn btn-success sonata-action-element" href="{{ admin.generateUrl('create', { siteId: currentSite.id }) }}">
+                <i class="fa fa-plus"></i>&nbsp;
+                {{ 'link_action_create'|trans({}, 'SonataAdminBundle') }}</a>
+        {% endif %}
+    {% endspaceless %}
+{% endblock %}
 
 {% import _self as tree %}
 {% macro pages(pages, admin, rootPages) %}
