@@ -3,7 +3,6 @@
 namespace Symbio\OrangeGate\PageBundle\Controller;
 
 use Sonata\PageBundle\Controller\PageAdminController as Controller;
-use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -55,7 +54,7 @@ class PageAdminController extends Controller
             }
 
             return $this->render('SonataPageBundle:PageAdmin:select_site.html.twig', array(
-                'sites'   => $sites,
+                'sites' => $sites,
                 'current' => $current,
             ));
         }
@@ -75,7 +74,7 @@ class PageAdminController extends Controller
         $form = $this->admin->getForm();
         $form->setData($object);
 
-        if ($this->getRestMethod()== 'POST') {
+        if ($this->getRestMethod() == 'POST') {
             $form->submit($this->get('request'));
 
             $isFormValid = $form->isValid();
@@ -142,7 +141,7 @@ class PageAdminController extends Controller
 
         return $this->render($this->admin->getTemplate($templateKey), array(
             'action' => 'create',
-            'form'   => $view,
+            'form' => $view,
             'object' => $object,
         ));
     }
@@ -163,18 +162,18 @@ class PageAdminController extends Controller
         $session = $this->get('session');
         $siteId = $request->get('site');
 
-        if (!$siteId) {
+        if (!$siteId && $session->has('sonata_site')) {
             $currentSite = $session->get('sonata_site');
         } else {
             foreach ($sites as $site) {
-                if ($siteId && $site->getId() === $siteId) {
+                if ($siteId && $site->getId() == $siteId) {
                     $currentSite = $site;
                 } elseif (!$siteId && $site->getIsDefault()) {
                     $currentSite = $site;
                 }
             }
 
-            if (!$currentSite && count($sites) == 1) {
+            if (!$currentSite && count($sites) > 0) {
                 $currentSite = $sites[0];
             }
         }
@@ -192,12 +191,12 @@ class PageAdminController extends Controller
         $this->get('twig')->getExtension('form')->renderer->setTheme($formView, $this->admin->getFilterTheme());
 
         return $this->render('SonataPageBundle:PageAdmin:tree.html.twig', array(
-            'action'      => 'tree',
-            'sites'       => $sites,
+            'action' => 'tree',
+            'sites' => $sites,
             'currentSite' => $currentSite,
-            'pages'       => $pages,
-            'form'        => $formView,
-            'csrf_token'  => $this->getCsrfToken('sonata.batch'),
+            'pages' => $pages,
+            'form' => $formView,
+            'csrf_token' => $this->getCsrfToken('sonata.batch'),
         ));
     }
 
@@ -231,35 +230,5 @@ class PageAdminController extends Controller
         }
 
         return parent::showAction($request);
-    }
-
-    /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
-     * @throws NotFoundHttpException
-     */
-    public function composeContainerShowAction(Request $request = null)
-    {
-        $id    = $this->get('request')->get($this->admin->getIdParameter());
-        $block = $this->get('sonata.page.admin.block')->getObject($id);
-        if (!$block) {
-            throw new NotFoundHttpException(sprintf('unable to find the block with id : %s', $id));
-        }
-
-        if ($block->getPage() && false === $this->admin->isGranted('EDIT', $block->getPage())) {
-            throw new AccessDeniedException();
-        }
-
-        $blockServices = $this->get('sonata.block.manager')->getServicesByContext('sonata_page_bundle', false);
-
-        $block_admin = $this->get('sonata.page.admin.block');
-
-        return $this->render('SonataPageBundle:PageAdmin:compose_container_show.html.twig', array(
-            'blockServices' => $blockServices,
-            'container'     => $block,
-            'page'          => $block->getPage(),
-            'block_admin' 	=> $block_admin
-        ));
     }
 }

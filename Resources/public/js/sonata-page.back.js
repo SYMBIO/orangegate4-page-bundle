@@ -689,6 +689,7 @@
                 cursor:         'move',
                 revertDuration: 200,
                 delay:          200,
+                handle:         '.page-composer__container__child__edit',
                 helper: function (event, element) {
                     var $element = $(element),
                         name     = $element.find('.page-composer__container__child__edit h4').text().trim(),
