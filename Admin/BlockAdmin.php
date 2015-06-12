@@ -32,6 +32,18 @@ class BlockAdmin extends BaseAdmin
         $collection->add('switchParent', 'switch-parent');
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function configureFormFields(FormMapper $formMapper)
+    {
+        $block = $this->getSubject();
+        if ($block->getId() === null) { // new block
+            $block->setName($this->request->get('type'));
+        }
+
+        return parent::configureFormFields($formMapper);
+    }
 
     protected function configureShowFields(ShowMapper $showMapper)
     {
@@ -62,7 +74,22 @@ class BlockAdmin extends BaseAdmin
         $object->setChildren($object->getChildren());
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function preUpdate($object)
+    {
+        $this->blockManager->get($object)->preUpdate($object);
 
+        $object->getPage()->setEdited(true);
+
+        foreach ($object->getTranslations() as $trans) {
+            $trans->setObject($object);
+        }
+
+        // fix weird bug with setter object not being call
+        $object->setChildren($object->getChildren());
+    }
 
     /**
      * {@inheritdoc}

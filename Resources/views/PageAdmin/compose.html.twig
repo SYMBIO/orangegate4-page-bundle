@@ -88,10 +88,9 @@
                 $(document).ready(function () {
                     var composer = new PageComposer({{ page.id }}, {
                         routes: {
-                            block_edit: "{{ path('admin_orangegate_page_block_edit',   { 'id': 'BLOCK_ID' }) }}",
-                            block_remove: "{{ path('admin_orangegate_page_block_delete', { 'id': 'BLOCK_ID' }) }}",
-                            save_blocks_positions: "{{ path('admin_orangegate_page_block_savePosition') }}",
-                            block_switch_parent: "{{ path('admin_orangegate_page_block_switchParent') }}"
+                            save_blocks_positions: "{{ admin_pool.getAdminByAdminCode('sonata.page.admin.block').generateUrl('savePosition', { 'id': page.id }) }}",
+                            block_switch_parent:   "{{ admin_pool.getAdminByAdminCode('sonata.page.admin.block').generateUrl('switchParent') }}",
+                            block_preview:         "{{ admin_pool.getAdminByAdminCode('sonata.page.admin.block').generateUrl('composePreview', { 'block_id': 'BLOCK_ID' }) }}"
                         }
                     });
 

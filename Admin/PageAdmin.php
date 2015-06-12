@@ -182,14 +182,15 @@ class PageAdmin extends BaseAdmin
                     'required'      => !$this->isGranted('EDIT'),
                     //'filter_choice' => array('root' => $this->isGranted('EDIT') ? false : $this->getSubject->getParent()),
                 ), array(
+                    'admin_code' => $this->getCode(),
                     'link_parameters' => array(
-                        'site Id' => $this->getSubject() ? $this->getSubject()->getSite()->getId() : null
+                        'siteId' => $this->getSubject() ? $this->getSubject()->getSite()->getId() : null
                     )
                 ))
                 ->add('icon', 'sonata_type_model_list', array('required' => false), array(
                     'placeholder' => 'No image selected',
                     'link_parameters' => array(
-                        'context' => 'arcdata',
+                        'context' => 'agrofert',
                         'provider' => 'sonata.media.provider.image',
                         'category' => 108,
                         'hide_context' => true,

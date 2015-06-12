@@ -301,7 +301,7 @@
                 var $childBlock = $(['<li class="page-composer__container__child">',
                         '<a class="page-composer__container__child__edit">',
                         '<h4 class="page-composer__container__child__name">',
-                        '<input type="text" class="page-composer__container__child__name__input">',
+                        '<input type="text" class="page-composer__container__child__name__input" value="' + event.blockTypeLabel +'">',
                         '</h4>',
                         '</a>',
                         '<div class="page-composer__container__child__right">',
@@ -414,19 +414,41 @@
          * @param $childBlock
          */
         toggleChildBlock: function ($childBlock) {
-            var expandedClass = 'page-composer__container__child--expanded',
+            var self               = this,
+                expandedClass = 'page-composer__container__child--expanded',
                 $children     = this.$dynamicArea.find('.page-composer__container__child'),
                 $childName    = $childBlock.find('.page-composer__container__child__name'),
                 $nameInput    = $childName.find('.page-composer__container__child__name__input');
 
             if ($childBlock.hasClass(expandedClass)) {
                 $childBlock.removeClass(expandedClass);
-                if ($childName.has('.page-composer__container__child__name__input')) {
-                    $childName.html($nameInput.val());
-                }
+                $childName.html($nameInput.val());
             } else {
                 $children.not($childBlock).removeClass(expandedClass);
                 $childBlock.addClass(expandedClass);
+                if ($nameInput.length === 0) {
+                    var $nameFormControl;
+                    var $form         = $childBlock.find('form'),
+                        $formControls = $form.find('input, select, textarea');
+
+                    $form.find('input[type=hidden]').each(function () {
+                        var $formControl    = $(this),
+                            formControlName = $formControl.attr('name');
+
+                        if (self.isFormControlTypeByName(formControlName, 'name')) {
+                            $nameFormControl = $formControl;
+                            $title = $childName.html('<input type="text" class="page-composer__container__child__name__input" value="' + $childName.html() +'">');
+                            $input = $childName.find('input');
+                            $input.bind("propertychange keyup input paste", function (e) {
+                                $nameFormControl.val($input.val());
+                            });
+                            $input.on('click', function (e) {
+                                e.stopPropagation();
+                                e.preventDefault();
+                            });
+                        }
+                    });
+                }
             }
         },
 

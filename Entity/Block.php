@@ -52,7 +52,7 @@ class Block extends BaseBlock
      * @var boolean
      * @Gedmo\Translatable
      */
-    protected $enabled;
+    protected $enabled = true;
 
     /**
      * @ORM\OneToMany(targetEntity="BlockTranslation", mappedBy="object", indexBy="locale", cascade={"all"}, orphanRemoval=true)
