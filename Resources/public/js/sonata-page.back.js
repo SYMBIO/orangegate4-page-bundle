@@ -424,7 +424,10 @@
                 $childBlock.removeClass(expandedClass);
                 $childName.html($nameInput.val());
             } else {
-                $children.not($childBlock).removeClass(expandedClass);
+                $children.not($childBlock).removeClass(expandedClass).each(function() {
+                    var $childName = $(this).find('.page-composer__container__child__name');
+                    $childName.html($childName.find('input').val());
+                });
                 $childBlock.addClass(expandedClass);
                 if ($nameInput.length === 0) {
                     var $nameFormControl;

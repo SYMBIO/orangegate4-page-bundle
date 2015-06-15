@@ -100,4 +100,53 @@ class CmsPageRouter extends BaseCmsPageRouter
 
         return $url;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
+    {
+        try {
+            $url = false;
+
+            if (is_int($name)) {
+                $name = $this->getPageById($name);
+            } elseif ($this->isPageAlias($name)) {
+                $name = $this->getPageByPageAlias($name);
+            }
+
+            if ($name instanceof PageInterface) {
+                $url = $this->generateFromPage($name, $parameters, $referenceType);
+            }
+
+            if ($this->isPageSlug($name)) {
+                $url = $this->generateFromPageSlug($parameters, $referenceType);
+            }
+
+            if ($url === false) {
+                throw new RouteNotFoundException('The Sonata CmsPageRouter cannot find url');
+            }
+
+        } catch (PageNotFoundException $exception) {
+            throw new RouteNotFoundException('The Sonata CmsPageRouter cannot find page');
+        }
+
+        return $url;
+    }
+
+    /**
+     * Retrieves a page object from a page id
+     *
+     * @param int $id
+     *
+     * @return \Sonata\PageBundle\Model\PageInterface|null
+     *
+     * @throws PageNotFoundException
+     */
+    protected function getPageById($id)
+    {
+        $page = $this->cmsSelector->retrieve()->getPageById($id);
+
+        return $page;
+    }
 }
