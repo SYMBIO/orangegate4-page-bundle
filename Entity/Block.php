@@ -55,7 +55,7 @@ class Block extends BaseBlock
     protected $enabled = true;
 
     /**
-     * @ORM\OneToMany(targetEntity="BlockTranslation", mappedBy="object", indexBy="locale", cascade={"all"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="BlockTranslation", mappedBy="object", indexBy="locale", cascade={"persist", "remove"}, orphanRemoval=true)
      * @Assert\Valid
      */
     protected $translations;
@@ -202,7 +202,7 @@ class Block extends BaseBlock
      */
     public function addTranslation(BlockTranslation $translations)
     {
-        $this->translations[] = $translations;
+        $this->translations[$translations->getLocale()] = $translations;
 
         return $this;
     }

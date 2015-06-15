@@ -62,33 +62,32 @@ class BlockAdmin extends BaseAdmin
      */
     public function prePersist($object)
     {
-        $this->blockManager->get($object)->prePersist($object);
+        parent::prePersist($object);
 
-        $object->getPage()->setEdited(true);
+        $translations = $object->getTranslations();
 
-        foreach ($object->getTranslations() as $trans) {
+        foreach ($translations as $trans) {
             $trans->setObject($object);
         }
-
-        // fix weird bug with setter object not being call
-        $object->setChildren($object->getChildren());
     }
 
     /**
      * {@inheritdoc}
      */
+
+    /**
+     * @param \Symbio\OrangeGate\PageBundle\Entity\Block $object
+     * @return mixed|void
+     */
     public function preUpdate($object)
     {
-        $this->blockManager->get($object)->preUpdate($object);
+        parent::preUpdate($object);
 
-        $object->getPage()->setEdited(true);
+        $translations = $object->getTranslations();
 
-        foreach ($object->getTranslations() as $trans) {
-            $trans->setObject($object);
-        }
-
-        // fix weird bug with setter object not being call
-        $object->setChildren($object->getChildren());
+        // because of current locale's translation being overwritten with base object data
+        $object->setSettings($translations[$this->getRequest()->getLocale()]->getSettings());
+        $object->setEnabled($translations[$this->getRequest()->getLocale()]->getEnabled());
     }
 
     /**
