@@ -39,7 +39,8 @@ class BlockAdmin extends BaseAdmin
     {
         $block = $this->getSubject();
         if ($block->getId() === null) { // new block
-            $block->setName($this->request->get('type'));
+            $service = $this->blockManager->getService($this->request->get('type'));
+            $block->setName($service->getName());
         }
 
         return parent::configureFormFields($formMapper);
