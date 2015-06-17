@@ -463,4 +463,19 @@ class Site extends BaseSite
     {
         $this->updatedAt = new \DateTime;
     }
+
+    /**
+     * @return array
+     */
+    public function getLocales()
+    {
+        $locales = array();
+        foreach ($this->getLanguageVersions() as $lv) {
+            /**
+             * @var LanguageVersion $lv
+             */
+            $locales[] = $lv->getLocale();
+        }
+        return $locales;
+    }
 }
