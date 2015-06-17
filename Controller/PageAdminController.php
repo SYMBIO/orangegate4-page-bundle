@@ -25,11 +25,11 @@ class PageAdminController extends Controller
 
     public function createAction(Request $request = NULL)
     {
-        if ($parentId = $this->getRequest()->query->get('parentId')) {
+        if ($parentId = $request->query->get('parentId')) {
             $parent = $this->admin->getObject($parentId);
             if ($parent) {
-                $this->getRequest()->request->set('siteId', $parent->getSite()->getId());
-                $this->getRequest()->request->set('parentId', $parent->getId());
+                $request->request->set('siteId', $parent->getSite()->getId());
+                $request->request->set('parentId', $parent->getId());
             }
         }
 
@@ -37,7 +37,7 @@ class PageAdminController extends Controller
             throw new AccessDeniedException();
         }
 
-        if ($this->getRequest()->getMethod() == 'GET' && !$this->getRequest()->get('siteId')) {
+        if ($request->getMethod() === 'GET' && !$request->get('siteId')) {
             $sites = $this->get('sonata.page.manager.site')->findBy(array());
 
             if (count($sites) == 1) {

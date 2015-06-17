@@ -86,6 +86,10 @@ class BlockAdmin extends BaseAdmin
 
         $translations = $object->getTranslations();
 
+        foreach ($translations as $trans) {
+            $trans->setObject($object);
+        }
+
         // because of current locale's translation being overwritten with base object data
         $object->setSettings($translations[$this->getRequest()->getLocale()]->getSettings());
         $object->setEnabled($translations[$this->getRequest()->getLocale()]->getEnabled());
@@ -110,10 +114,10 @@ class BlockAdmin extends BaseAdmin
             try {
                 if ($subject->getTranslations() && $subject->getTranslations()->count() > 0) {
                     foreach ($subject->getTranslations() as $t) {
-                        $t->setSettings($resolver->resolve($t->getSettings()));
+                        $t->setSettings($resolver->resolve($t->getSettings() ?: array()));
                     }
                 } else {
-                    $block->setSettings($resolver->resolve($block->getSettings()));
+                    $block->setSettings($resolver->resolve($block->getSettings() ?: array()));
                 }
             } catch (InvalidOptionsException $e) {
                 // @TODO : add a logging error or a flash message

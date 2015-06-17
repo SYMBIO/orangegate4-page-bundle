@@ -112,6 +112,16 @@ class PageAdmin extends BaseAdmin
      */
     protected function configureFormFields(FormMapper $formMapper)
     {
+        // get site and locales
+        $site = null;
+        $locales = array();
+        if ($this->getSubject()) {
+            $site = $this->getSubject()->getSite();
+            foreach ($site->getLanguageVersions() as $lv) {
+                 $locales[] = $lv->getLocale();
+            }
+        }
+
         // define group zoning
         $formMapper
              ->with($this->trans('form_page.group_basic_label'), array('class' => 'col-md-6'))->end()
@@ -124,7 +134,7 @@ class PageAdmin extends BaseAdmin
                 ->with($this->trans('form_page.group_basic_label'))
                     ->add('translations', 'orangegate_translations', array(
                         'label' => false,
-						'locales' => $this->getConfigurationPool()->getContainer()->getParameter('symbio.orangegate.locales'),
+						'locales' => $locales,
                         'fields' => array(
                                 'enabled' => array(
                                     'field_type' => 'checkbox',
@@ -176,7 +186,7 @@ class PageAdmin extends BaseAdmin
                 ->add('templateCode', 'sonata_page_template', array('required' => true))
                 ->add('parent', 'orangegate_page_selector', array(
                     'page'          => $this->getSubject() ?: null,
-                    'site'          => $this->getSubject() ? $this->getSubject()->getSite() : null,
+                    'site'          => $site,
                     'model_manager' => $this->getModelManager(),
                     'class'         => $this->getClass(),
                     'required'      => !$this->isGranted('EDIT'),
@@ -184,7 +194,7 @@ class PageAdmin extends BaseAdmin
                 ), array(
                     'admin_code' => $this->getCode(),
                     'link_parameters' => array(
-                        'siteId' => $this->getSubject() ? $this->getSubject()->getSite()->getId() : null
+                        'siteId' => $site->getId()
                     )
                 ))
                 ->add('icon', 'sonata_type_model_list', array('required' => false), array(
