@@ -3,20 +3,16 @@
 namespace Symbio\OrangeGate\PageBundle\Entity;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Sonata\PageBundle\Entity\PageManager as BaseEntityManager;
+use Sonata\PageBundle\Entity\PageManager as BasePageManager;
 use Sonata\PageBundle\Model\PageManagerInterface;
 use Sonata\PageBundle\Model\PageInterface;
 use Sonata\PageBundle\Model\SiteInterface;
 use Sonata\PageBundle\Model\Page as ModelPage;
-use Sonata\DatagridBundle\Pager\Doctrine\Pager;
-use Sonata\DatagridBundle\ProxyQuery\Doctrine\ProxyQuery;
 
 /**
  * This class manages PageInterface persistency with the Doctrine ORM
- *
- * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class PageManager extends BaseEntityManager implements PageManagerInterface
+class PageManager extends BasePageManager implements PageManagerInterface
 {
     /**
      * @param \Sonata\PageBundle\Model\PageInterface $page
@@ -62,7 +58,9 @@ class PageManager extends BaseEntityManager implements PageManagerInterface
             } else {
                 foreach ($page->getTranslations() as $trans) {
                     // a parent page does not have any slug - can have a custom url ...
-                    $trans->setSlug(null);
+                    if (!$trans->getSlug()) {
+                        $trans->setSlug(ModelPage::slugify($trans->getName()));
+                    }
                     $trans->setUrl('/'.$trans->getSlug());
                 }
             }
@@ -71,20 +69,6 @@ class PageManager extends BaseEntityManager implements PageManagerInterface
         foreach ($page->getChildren() as $child) {
             $this->fixUrl($child);
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function save($page, $andFlush = true)
-    {
-        if (!$page->isHybrid()) {
-            $this->fixUrl($page);
-        }
-
-        parent::save($page, $andFlush);
-
-        return $page;
     }
 
     /**
@@ -144,22 +128,5 @@ class PageManager extends BaseEntityManager implements PageManagerInterface
         );
 
         return $query->getOneOrNullResult();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getHybridPages(SiteInterface $site)
-    {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('p')
-            ->from( $this->class, 'p')
-            ->where('p.routeName <> :routeName and p.site = :site')
-            ->setParameters(array(
-                'routeName' => PageInterface::PAGE_ROUTE_CMS_NAME,
-                'site' => $site->getId()
-            ))
-            ->getQuery()
-            ->execute();
     }
 }

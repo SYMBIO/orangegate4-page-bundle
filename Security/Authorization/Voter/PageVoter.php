@@ -2,10 +2,9 @@
 
 namespace Symbio\OrangeGate\PageBundle\Security\Authorization\Voter;
 
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Acl\Voter\AclVoter;
 
 class PageVoter implements VoterInterface
 {
@@ -37,18 +36,25 @@ class PageVoter implements VoterInterface
             return self::ACCESS_ABSTAIN;
         }
 
-        $securityContext = $this->container->get('security.context');
+        /**
+         * @var AuthorizationChecker $authorizationChecker
+         */
+        $authorizationChecker = $this->container->get('security.authorization_checker');
+
+        if ($authorizationChecker->isGranted('ROLE_SONATA_PAGE_ADMIN_PAGE_ADMIN')) {
+            return self::ACCESS_GRANTED;
+        }
 
         // check parents
         $parent = $page->getParent();
         while ($parent) {
-            if ($securityContext->isGranted($attributes, $parent)) {
+            if ($authorizationChecker->isGranted($attributes, $parent)) {
                 return self::ACCESS_GRANTED;
             }
 
             $parent = $parent->getParent();
         }
 
-        return self::ACCESS_DENIED;
+        return self::ACCESS_ABSTAIN;
     }
 }
