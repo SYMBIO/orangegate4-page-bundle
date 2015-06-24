@@ -58,9 +58,6 @@ class PageManager extends BasePageManager implements PageManagerInterface
             } else {
                 foreach ($page->getTranslations() as $trans) {
                     // a parent page does not have any slug - can have a custom url ...
-                    if (!$trans->getSlug()) {
-                        $trans->setSlug(ModelPage::slugify($trans->getName()));
-                    }
                     $trans->setUrl('/'.$trans->getSlug());
                 }
             }
@@ -84,10 +81,17 @@ class PageManager extends BasePageManager implements PageManagerInterface
             'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
         );
 
-        $query->setHint(
-            \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
-            $site->getLanguageVersions()[0]->getLocale()
-        );
+        if (count($site->getLanguageVersions()) > 0) {
+            $query->setHint(
+                \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
+                $site->getLanguageVersions()[0]->getLocale()
+            );
+        } else {
+            $query->setHint(
+                \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
+                $site->getLocale()
+            );
+        }
 
         $pages = $query->execute();
 
