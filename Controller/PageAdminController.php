@@ -155,32 +155,13 @@ class PageAdminController extends Controller
             throw new AccessDeniedException();
         }
 
-        $sites = $this->get('sonata.page.manager.site')->findBy(array());
-        $pageManager = $this->get('sonata.page.manager.page');
-
-        $currentSite = null;
-        $session = $this->get('session');
-        $siteId = $request->get('site');
-
-        if (!$siteId && $session->has('sonata_site')) {
-            $currentSite = $session->get('sonata_site');
-        } else {
-            foreach ($sites as $site) {
-                if ($siteId && $site->getId() == $siteId) {
-                    $currentSite = $site;
-                } elseif (!$siteId && $site->getIsDefault()) {
-                    $currentSite = $site;
-                }
-            }
-
-            if (!$currentSite && count($sites) > 0) {
-                $currentSite = $sites[0];
-            }
-        }
+        $sitePool = $this->get('orangegate.site.pool');
+        $sites = $sitePool->getSites();
+        $currentSite = $sitePool->getCurrentSite($request);
 
         if ($currentSite) {
+            $pageManager = $this->get('sonata.page.manager.page');
             $pages = $pageManager->loadPages($currentSite);
-            $session->set('sonata_site', $currentSite);
         } else {
             $pages = array();
         }

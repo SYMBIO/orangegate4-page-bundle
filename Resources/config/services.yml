@@ -5,24 +5,28 @@ services:
             - { name: sonata.admin, manager_type: orm, group: sonata_page, label: languageVersions }
         arguments: [null, Symbio\OrangeGate\PageBundle\Entity\LanguageVersion, null, @sonata.page.route.page.generator]
         calls:
-            - [ setTranslationDomain, [SonataPageBundle] ]
+            - [ setTranslationDomain, [ SonataPageBundle ] ]
 
     orangegate.security.access.page_voter:
         class: Symbio\OrangeGate\PageBundle\Security\Authorization\Voter\PageVoter
-        arguments: [@service_container]
+        arguments: [ @service_container ]
         public: false
         tags:
            - { name: security.voter }
 
     orangegate.security.access.block_voter:
         class: Symbio\OrangeGate\PageBundle\Security\Authorization\Voter\BlockVoter
-        arguments: [@service_container]
+        arguments: [ @service_container ]
         public: false
         tags:
            - { name: security.voter }
 
     orangegate.page.form.type.page_selector:
         class: Symbio\OrangeGate\PageBundle\Form\Type\PageSelectorType
-        arguments: [@sonata.page.manager.page, @security.context]
+        arguments: [ @sonata.page.manager.page, @security.context ]
         tags:
             - { name: form.type, alias: orangegate_page_selector }
+
+    orangegate.site.pool:
+        class: Symbio\OrangeGate\PageBundle\Entity\SitePool
+        arguments: [ @sonata.page.manager.site, @session ]

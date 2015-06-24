@@ -48,7 +48,11 @@
       </trans-unit>
       <trans-unit id="link_action_create_subpage">
         <source>link_action_create_subpage</source>
-        <target>Vytvořit podstránku</target>
+        <target>Přidat podstránku</target>
+      </trans-unit>
+      <trans-unit id="link_action_create">
+        <source>link_action_create</source>
+        <target>Přidat stránku</target>
       </trans-unit>
     </body>
   </file>
