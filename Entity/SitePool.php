@@ -31,7 +31,7 @@ class SitePool
     public function getSites()
     {
         if (!$this->sites) {
-            $this->sites = $this->siteManager->findBy(array());
+            $this->sites = $this->siteManager->findBy(array(), array('name' => 'ASC'));
         }
 
         return $this->sites;
