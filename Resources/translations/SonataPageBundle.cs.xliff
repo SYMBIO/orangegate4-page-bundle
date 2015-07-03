@@ -747,6 +747,34 @@
         <source>show.label_position</source>
         <target>Pozice</target>
       </trans-unit>
+      <trans-unit id="shared_block">
+        <source>shared_block</source>
+        <target>Sdílené bloky</target>
+      </trans-unit>
+      <trans-unit id="breadcrumb.link_shared_block_batch" resname="breadcrumb.link_shared_block_batch">
+        <source>breadcrumb.link_shared_block_batch</source>
+        <target>Dávka</target>
+      </trans-unit>
+      <trans-unit id="breadcrumb.link_shared_block_create" resname="breadcrumb.link_shared_block_create">
+        <source>breadcrumb.link_shared_block_create</source>
+        <target>Vytvořit</target>
+      </trans-unit>
+      <trans-unit id="breadcrumb.link_shared_block_delete" resname="breadcrumb.link_shared_block_delete">
+        <source>breadcrumb.link_shared_block_delete</source>
+        <target>Smazat</target>
+      </trans-unit>
+      <trans-unit id="breadcrumb.link_shared_block_edit" resname="breadcrumb.link_shared_block_edit">
+        <source>breadcrumb.link_shared_block_edit</source>
+        <target>Upravit</target>
+      </trans-unit>
+      <trans-unit id="breadcrumb.link_shared_block_list" resname="breadcrumb.link_shared_block_list">
+        <source>breadcrumb.link_shared_block_list</source>
+        <target>Seznam bloků</target>
+      </trans-unit>
+      <trans-unit id="breadcrumb.link_shared_block_update" resname="breadcrumb.link_shared_block_update">
+        <source>breadcrumb.link_shared_block_update</source>
+        <target>Uložit</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

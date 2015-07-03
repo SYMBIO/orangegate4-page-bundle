@@ -65,6 +65,10 @@ class BlockAdmin extends BaseAdmin
     {
         parent::prePersist($object);
 
+        if ($object->getPage()) {
+            $object->setSite($object->getPage()->getSite());
+        }
+
         $translations = $object->getTranslations();
 
         foreach ($translations as $trans) {
@@ -83,6 +87,10 @@ class BlockAdmin extends BaseAdmin
     public function preUpdate($object)
     {
         parent::preUpdate($object);
+
+        if ($object->getPage()) {
+            $object->setSite($object->getPage()->getSite());
+        }
 
         $translations = $object->getTranslations();
 

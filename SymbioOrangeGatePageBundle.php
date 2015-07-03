@@ -10,6 +10,8 @@
 
 namespace Symbio\OrangeGate\PageBundle;
 
+use Symbio\OrangeGate\PageBundle\DependencyInjection\Compiler\AddSitePoolCompilerPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -28,5 +30,13 @@ class SymbioOrangeGatePageBundle extends Bundle
     public function getParent()
     {
         return 'SonataPageBundle';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new AddSitePoolCompilerPass());
     }
 }

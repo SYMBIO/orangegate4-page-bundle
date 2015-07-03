@@ -38,6 +38,12 @@ class Block extends BaseBlock
     protected $parent;
 
     /**
+     * @var \Symbio\OrangeGate\PageBundle\Entity\Site
+     * @ORM\ManyToOne(targetEntity="Site", cascade={"persist", "remove"})
+     */
+    protected $site;
+
+    /**
      * @var \Symbio\OrangeGate\PageBundle\Entity\Page
      */
     protected $page;
@@ -169,6 +175,28 @@ class Block extends BaseBlock
     public function getParent()
     {
         return $this->parent;
+    }
+
+    /**
+     * Get site
+     *
+     * @return Site
+     */
+    public function getSite()
+    {
+        return $this->site;
+    }
+
+    /**
+     * Set site
+     *
+     * @param Site $site
+     * @return Block
+     */
+    public function setSite($site)
+    {
+        $this->site = $site;
+        return $this;
     }
 
     /**
