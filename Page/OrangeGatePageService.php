@@ -44,7 +44,11 @@ class OrangeGatePageService extends BasePageService
     {
         $this->updateSeoPage($page, $request->getLocale());
 
-        $response = $this->templateManager->renderResponse($page->getTemplateCode(), $parameters, $response);
+        if ($response->getContent()) {
+            $response = $this->templateManager->renderResponse($page->getTemplateCode(), array_merge($parameters, array('content' => $response->getContent())), $response);
+        } else {
+            $response = $this->templateManager->renderResponse($page->getTemplateCode(), $parameters, $response);
+        }
 
         return $response;
     }

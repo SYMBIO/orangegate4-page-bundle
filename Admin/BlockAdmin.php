@@ -76,13 +76,23 @@ class BlockAdmin extends BaseAdmin
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function getNewInstance()
+    {
+        $object = parent::getNewInstance();
+
+        if ($this->isChild() && $this->getParentAssociationMapping()) {
+            $parent = $this->getParent()->getObject($this->request->get($this->getParent()->getIdParameter()));
+
+            if ($parent) {
+                $object->setSite($parent->getSite());
+            }
+        }
+
+        return $object;
+    }
 
     /**
-     * @param \Symbio\OrangeGate\PageBundle\Entity\Block $object
-     * @return mixed|void
+     * {@inheritdoc}
      */
     public function preUpdate($object)
     {
