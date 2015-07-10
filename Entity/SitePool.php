@@ -43,9 +43,13 @@ class SitePool
         $siteId = $request->get('site');
 
         if (!$siteId && $this->session->has(self::SESSION_NAME)) {
-            $currentSite = $this->session->get(self::SESSION_NAME);
+            $currentSiteId = $this->session->get(self::SESSION_NAME);
+            $currentSite = $this->siteManager->find($currentSiteId);
+            if (!$currentSite) {
+                $currentSite = $this->getSites()[0];
+            }
         } else {
-            foreach ($this->sites as $site) {
+            foreach ($this->getSites() as $site) {
                 if ($siteId && $site->getId() == $siteId) {
                     $currentSite = $site;
                 } elseif (!$siteId && $site->getIsDefault()) {
@@ -59,7 +63,7 @@ class SitePool
         }
 
         if ($currentSite) {
-            $this->session->set(self::SESSION_NAME, $currentSite);
+            $this->session->set(self::SESSION_NAME, $currentSite->getId());
         }
 
         return $currentSite;

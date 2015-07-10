@@ -22,7 +22,7 @@ class Site extends BaseSite
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="LanguageVersion", mappedBy="site", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="LanguageVersion", mappedBy="site", cascade={"persist", "remove"})
      */
     protected $languageVersions;
 
