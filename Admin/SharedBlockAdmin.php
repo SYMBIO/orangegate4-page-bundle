@@ -30,10 +30,23 @@ class SharedBlockAdmin extends BaseBlockAdmin
         $this->sitePool = $sitePool;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function prePersist($object)
+    {
+        parent::prePersist($object);
+
+        $translations = $object->getTranslations();
+
+        foreach ($translations as $trans) {
+            $trans->setObject($object);
+        }
+    }
+
     public function getNewInstance()
     {
         $object = parent::getNewInstance();
-
         $object->setSite($this->sitePool->getCurrentSite($this->getRequest()));
 
         return $object;

@@ -200,8 +200,6 @@ class SharedBlockBlockService extends BaseBlockService
      */
     public function preUpdate(BlockInterface $block)
     {
-        foreach ($block->getTranslations() as $trans) {
-            $trans->setSetting('blockId', is_object($trans->getSetting('blockId')) ? $trans->getSetting('blockId')->getId() : null);
-        }
+        $this->prePersist($block);
     }
 }

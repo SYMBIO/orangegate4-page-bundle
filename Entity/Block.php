@@ -40,11 +40,13 @@ class Block extends BaseBlock
     /**
      * @var \Symbio\OrangeGate\PageBundle\Entity\Site
      * @ORM\ManyToOne(targetEntity="Site", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="site_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $site;
 
     /**
      * @var \Symbio\OrangeGate\PageBundle\Entity\Page
+     * @ORM\ManyToOne(targetEntity="Page", cascade={"persist", "remove"})
      */
     protected $page;
 

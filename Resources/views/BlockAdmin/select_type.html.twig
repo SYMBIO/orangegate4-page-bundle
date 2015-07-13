@@ -1,0 +1,60 @@
+{% extends 'SonataAdminBundle:CRUD:action.html.twig' %}
+
+{% block title %}{{ 'title_select_block_type'|trans({}, 'SonataPageBundle') }}{% endblock %}
+
+{% block navbar_title %}
+    {{ 'pages.tree_site_label'|trans({}, 'SonataPageBundle') }}
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <strong class="text-info">{{ currentSite.name }}</strong> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            {% for site in sites %}
+                <li>
+                    <a href="{{ admin.generateUrl('create', { 'site': site.id }) }}">
+                        {{ site.name }}
+                        {% if currentSite and site.id == currentSite.id %}
+                            <span class="pull-right">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                        {% endif %}
+                    </a>
+                </li>
+            {% endfor%}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="box box-success">
+        <div class="box-header">
+            <h3 class="box-title">
+                {{ 'title_select_block_type'|trans({}, 'SonataPageBundle') }}
+            </h3>
+        </div>
+        <div class="box-body">
+            {% for code, service in services %}
+                <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                    <a  href="{{ admin.generateUrl('create', {'type': code, 'site': currentSite.id}) }}"
+                        class="btn btn-app btn-block"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="{{ service.blockMetadata.description|trans({}, service.blockMetadata.domain|default('SonataPageBundle')) }}"
+                            >
+                        {% if not service.blockMetadata.image %}
+                            <i class="{{ service.blockMetadata.option('class') }}" ></i>
+                        {% else %}
+                            <img src="{{ asset(service.blockMetadata.image) }}" style="max-height: 20px; max-width: 100px;"/>
+                            <br />
+                        {% endif %}
+                        <span>{{ service.blockMetadata.title|trans({}, service.blockMetadata.domain|default('SonataPageBundle')) }}</span>
+                    </a>
+                </div>
+            {% else %}
+                <span class="alert alert-info">{{ 'no_type_available'|trans({}, 'SonataPageBundle') }}</span>
+            {% endfor %}
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+{% endblock %}
