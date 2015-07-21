@@ -301,7 +301,7 @@
                 var $childBlock = $(['<li class="page-composer__container__child">',
                         '<a class="page-composer__container__child__edit">',
                         '<h4 class="page-composer__container__child__name">',
-                        '<input type="text" class="page-composer__container__child__name__input" value="' + event.blockTypeLabel +'">',
+                        '<input type="text" class="page-composer__container__child__name__input" value="' + event.blockTypeLabel.replace(new RegExp('"', 'g'), '&quot;') +'">',
                         '</h4>',
                         '</a>',
                         '<div class="page-composer__container__child__right">',
@@ -440,7 +440,7 @@
 
                         if (self.isFormControlTypeByName(formControlName, 'name')) {
                             $nameFormControl = $formControl;
-                            $title = $childName.html('<input type="text" class="page-composer__container__child__name__input" value="' + $childName.html() +'">');
+                            $title = $childName.html('<input type="text" class="page-composer__container__child__name__input" value="' + $childName.html().replace(new RegExp('"', 'g'), '&quot;') +'">');
                             $input = $childName.find('input');
                             $input.bind("propertychange keyup input paste", function (e) {
                                 $nameFormControl.val($input.val());
@@ -478,7 +478,7 @@
 
                 if (self.isFormControlTypeByName(formControlName, 'name')) {
                     $nameFormControl = $formControl;
-                    $title.html('<input type="text" class="page-composer__container__child__name__input" value="' + $title.text() + '">');
+                    $title.html('<input type="text" class="page-composer__container__child__name__input" value="' + $title.text().replace(new RegExp('"', 'g'), '&quot;') + '">');
                     $input = $title.find('input');
                     $input.bind("propertychange keyup input paste", function (e) {
                         $nameFormControl.val($input.val());
