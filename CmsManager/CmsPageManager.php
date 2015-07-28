@@ -24,8 +24,6 @@ class CmsPageManager extends BaseCmsPageManager
 
     protected $pageReferences = array();
 
-    protected $pages = array();
-
     /**
      * @param \Sonata\PageBundle\Model\PageManagerInterface     $pageManager
      * @param \Sonata\PageBundle\Model\BlockInteractorInterface $blockInteractor
@@ -63,7 +61,7 @@ class CmsPageManager extends BaseCmsPageManager
      */
     public function getInternalRoute(SiteInterface $site, $pageName)
     {
-        if (substr($pageName, 0, 5) == 'error') {
+        if (substr($pageName, 0, 5) === 'error') {
             throw new \RuntimeException(sprintf('Illegal internal route name : %s, an internal page cannot start with `error`', $pageName));
         }
 
@@ -130,57 +128,31 @@ class CmsPageManager extends BaseCmsPageManager
      */
     protected function getPageBy(SiteInterface $site = null, $fieldName, $value)
     {
-        if ('id' == $fieldName) {
-            $id = $value;
+        if ('id' === $fieldName) {
+            $page = $this->pageManager->findOneById($site, $value);
+        } elseif ('url' === $fieldName) {
+            $page = $this->pageManager->findOneByUrl($site, $value);
         } elseif (isset($this->pageReferences[$fieldName][$value])) {
-            $id = $this->pageReferences[$fieldName][$value];
+            $page = $this->pageReferences[$fieldName][$value];
         } else {
-            $id = null;
+            $parameters = array(
+                $fieldName => $value,
+            );
+
+            if ($site) {
+                $parameters['site'] = $site->getId();
+            }
+
+            $page = $this->pageManager->findOneBy($parameters);
         }
 
-        if ($site) {
-            $site_id = $site->getId();
-            $locale = $site->getLocale();
-        } else {
-            $site_id = null;
-            $locale = null;
+        if (!$page) {
+            throw new PageNotFoundException(sprintf('Unable to find the page : %s = %s', $fieldName, $value));
         }
 
-        if (null === $id || !isset($this->pages[$site_id][$id])) {
-            if ($fieldName === 'url') {
-                $page = $this->pageManager->findOneByUrl($site, $value);
-            } else {
-                $parameters = array(
-                    $fieldName => $value,
-                );
+        $this->pageReferences[$fieldName][$value] = $page;
 
-                if ($site) {
-                    $parameters['site'] = $site->getId();
-                }
-
-                $page = $this->pageManager->findOneBy($parameters);
-            }
-
-            if (!$page) {
-                throw new PageNotFoundException(sprintf('Unable to find the page : %s = %s', $fieldName, $value));
-            }
-
-            if (!$site) {
-                $site = $page->getSite();
-                $site_id = $site->getId();
-            }
-
-            $this->loadBlocks($page);
-            $id = $page->getId();
-
-            if ($fieldName != 'id') {
-                $this->pageReferences[$fieldName][$value] = $id;
-            }
-
-            $this->pages[$site_id][$id] = $page;
-        }
-
-        return $this->pages[$site_id][$id];
+        return $page;
     }
 
     /**

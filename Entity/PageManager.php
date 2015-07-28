@@ -14,6 +14,8 @@ use Sonata\PageBundle\Model\Page as ModelPage;
  */
 class PageManager extends BasePageManager implements PageManagerInterface
 {
+    private $pages = array();
+
     /**
      * @param \Sonata\PageBundle\Model\PageInterface $page
      *
@@ -112,25 +114,42 @@ class PageManager extends BasePageManager implements PageManagerInterface
 
     public function findOneByUrl($site, $url)
     {
-        $query = $this->getEntityManager()->createQuery(sprintf('
-            SELECT p
-            FROM %s p
-            WHERE p.url = :url
-            AND p.site = :site
-        ', $this->class))->setParameters(array(
-            'url' => $url,
-            'site' => $site,
-        ));
+        $site_id = $site->getId();
 
-        $query->setHint(
-            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
-            'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
-        );
-        $query->setHint(
-            \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
-            $site->getLocale()
-        );
+        if (!isset($this->pages[$site_id])) {
+            $this->pages[$site_id] = $this->loadPages($site);
+        }
 
-        return $query->getOneOrNullResult();
+        foreach ($this->pages[$site_id] as $page) {
+            if ($page->getUrl() === $url) {
+                return $page;
+            }
+        }
+
+        return null;
+    }
+
+    public function findOneById($site, $id)
+    {
+        // if pages are not loaded, first get page by id and then load pages of the same site
+        if (!$this->pages) {
+            $page = $this->findOneBy(array('id' => $id));
+
+            if ($page) {
+                $this->loadPages($page->getSite());
+            }
+
+            return $page;
+        }
+
+        foreach ($this->pages as $site_id => $pages) {
+            foreach ($pages as $page) {
+                if ($page->getId() === (int)$id) {
+                    return $page;
+                }
+            }
+        }
+
+        return null;
     }
 }
