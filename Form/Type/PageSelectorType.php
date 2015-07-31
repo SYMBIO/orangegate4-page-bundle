@@ -70,26 +70,13 @@ class PageSelectorType extends AbstractType
         $choices = array();
 
         foreach ($pages as $page) {
-            // internal cannot be selected
-            if ($page->isInternal()) {
-                continue;
+            if (
+                !$page->isInternal() // internal cannot be selected
+                && null === $page->getParent()
+                && $this->securityContext->isGranted('EDIT', $page)
+            ) {
+                $this->childWalker($page, null, $choices, 1);
             }
-
-            if ($filter_choice['root']) {
-                $parent = $page;
-                while ($parent) {
-                    if ($parent->getId() === $filter_choice['root']->getId()) {
-
-                    }
-                    $parent = $page->getParent();
-                }
-            }
-
-            if (!$this->securityContext->isGranted('EDIT', $page)) {
-                continue;
-            }
-
-            $choices[$page->getId()] = $page;
         }
 
         return $choices;
@@ -103,18 +90,20 @@ class PageSelectorType extends AbstractType
      */
     private function childWalker(PageInterface $page, PageInterface $currentPage = null, &$choices, $level = 1)
     {
-        foreach ($page->getChildren() as $child) {
-            if ($currentPage && $currentPage->getId() == $child->getId()) {
-                continue;
+        if (
+            !($currentPage && $currentPage->getId() == $page->getId())
+            && !$page->isDynamic()
+        ) {
+            $parent = $page->getParent();
+            if ($parent && $parent->getParent()) {
+                $page->setName($parent->getName() . '/' . $page->getName());
             }
 
-            if ($child->isDynamic()) {
-                continue;
+            $choices[$page->getId()] = $page;
+
+            foreach ($page->getChildren() as $child) {
+                    $this->childWalker($child, $currentPage, $choices, $level + 1);
             }
-
-            $choices[$child->getId()] = $child;
-
-            $this->childWalker($child, $currentPage, $choices, $level + 1);
         }
     }
 

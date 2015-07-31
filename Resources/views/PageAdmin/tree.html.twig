@@ -23,7 +23,7 @@
                         <i class="text-muted">{{ page.url }}</i>
                         <a class="btn btn-primary btn-xs pull-right" style="margin-left: 20px" href="{{ admin.generateObjectUrl('edit', page) }}"><i class="fa fa-pencil-square-o"> Upravit metadata</i></a>
                     {% else %}
-                        <span class="page-tree__item__edit"}}">{{ page.name }}</span>
+                        <span class="page-tree__item__edit">{{ page.name }}</span>
                         <i class="text-muted">{{ page.url }}</i>
                     {% endif %}
                     {% if page.edited %}<span class="label label-warning pull-left">edited</span>{% endif %}
