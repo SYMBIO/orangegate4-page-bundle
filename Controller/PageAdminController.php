@@ -212,4 +212,49 @@ class PageAdminController extends Controller
 
         return parent::showAction($request);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function composeContainerShowAction(Request $request = null)
+    {
+        if (false === $this->get('sonata.page.admin.block')->isGranted('LIST')) {
+            throw new AccessDeniedException();
+        }
+
+        $id    = $request->get($this->admin->getIdParameter());
+        $block = $this->get('sonata.page.admin.block')->getObject($id);
+        if (!$block) {
+            throw new NotFoundHttpException(sprintf('unable to find the block with id : %s', $id));
+        }
+
+        $blockServices = $this->get('sonata.block.manager')->getServicesByContext('sonata_page_bundle', false);
+
+        // filter service using the template configuration
+        if ($page = $block->getPage()) {
+            $template = $this->get('sonata.page.template_manager')->get($page->getTemplateCode());
+
+            $container = $template->getContainer($block->getSetting('code'));
+
+            if (count($container['blocks']) > 0) {
+                foreach ($blockServices as $code => $service) {
+                    if (!in_array($code, $container['blocks'])) {
+                        unset($blockServices[$code]);
+                    }
+                }
+            }
+
+            foreach ($blockServices as $code => $service) {
+                if (is_callable(array($service, 'canDisplayIn')) && !$service->canDisplayIn($block, $template)) {
+                    unset($blockServices[$code]);
+                }
+            }
+        }
+
+        return $this->render('SonataPageBundle:PageAdmin:compose_container_show.html.twig', array(
+            'blockServices' => $blockServices,
+            'container'     => $block,
+            'page'          => $block->getPage(),
+        ));
+    }
 }
