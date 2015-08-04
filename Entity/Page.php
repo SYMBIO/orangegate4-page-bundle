@@ -1255,4 +1255,18 @@ class Page implements PageInterface
         self::$slugifyMethod = $slugifyMethod;
     }
 
+    /**
+     * Returns page name containing parent page name
+     * @return string
+     */
+    public function getLongName() {
+        $name = $this->getName();
+
+        foreach ($this->getParents() as $parent) {
+            $name = $parent->getName() . '/' . $name;
+        }
+
+        return $name;
+    }
+
 }
