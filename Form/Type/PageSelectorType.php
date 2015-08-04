@@ -94,12 +94,7 @@ class PageSelectorType extends AbstractType
             !($currentPage && $currentPage->getId() == $page->getId())
             && !$page->isDynamic()
         ) {
-            $parent = $page->getParent();
-            if ($parent && $parent->getParent()) {
-                $page->setName($parent->getName() . '/' . $page->getName());
-            }
-
-            $choices[$page->getId()] = $page;
+            $choices[$page->getId()] = $page->getLongName();
 
             foreach ($page->getChildren() as $child) {
                     $this->childWalker($child, $currentPage, $choices, $level + 1);
