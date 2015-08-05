@@ -1256,17 +1256,20 @@ class Page implements PageInterface
     }
 
     /**
-     * Returns page name containing parent page name
+     * Returns page name containing parents page name
      * @return string
      */
     public function getLongName() {
-        $name = $this->getName();
+        $divider = ' / ';
 
+        $parents = array();
         foreach ($this->getParents() as $parent) {
-            $name = $parent->getName() . '/' . $name;
+            if ($parent->getParent()) { // without top level page
+                $parents[] = $parent->getName();
+            }
         }
 
-        return $name;
+        return (count($parents) ? implode($divider, $parents) . $divider : '') . $this->getName();
     }
 
 }
