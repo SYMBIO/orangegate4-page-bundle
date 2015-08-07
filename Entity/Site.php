@@ -107,6 +107,13 @@ class Site extends BaseSite
     protected $metaDescription;
 
     /**
+     * @var
+     * @ORM\ManyToOne(targetEntity="Symbio\OrangeGate\MediaBundle\Entity\Media")
+     * @ORM\JoinColumn(name="favicon", referencedColumnName="id", nullable=true)
+     */
+    protected $favicon;
+
+    /**
      * {@inheritdoc}
      */
     public function setId($id)
@@ -477,5 +484,16 @@ class Site extends BaseSite
             $locales[] = $lv->getLocale();
         }
         return $locales;
+    }
+
+    public function getFavicon()
+    {
+        return $this->favicon;
+    }
+
+    public  function setFavicon($favicon)
+    {
+        $this->favicon = $favicon;
+        return $this;
     }
 }
