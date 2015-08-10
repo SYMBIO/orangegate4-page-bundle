@@ -48,19 +48,19 @@ class PageManager extends BasePageManager implements PageManagerInterface
                             if ($url == '/') {
                                 $base = '/';
                             } elseif (substr($url, -1) != '/') {
-                                $base = $url.'/';
+                                $base = $url . '/';
                             } else {
                                 $base = $url;
                             }
 
-                            $trans->setUrl($base.$trans->getSlug()) ;
+                            $trans->setUrl($base . $trans->getSlug());
                         }
                     }
                 }
             } else {
                 foreach ($page->getTranslations() as $trans) {
                     // a parent page does not have any slug - can have a custom url ...
-                    $trans->setUrl('/'.$trans->getSlug());
+                    $trans->setUrl('/' . $trans->getSlug());
                 }
             }
         }
@@ -151,5 +151,35 @@ class PageManager extends BasePageManager implements PageManagerInterface
         }
 
         return null;
+    }
+
+    /**
+     * @param Page $page
+     * @return mixed
+     */
+    public function findBlockLinksTo($page)
+    {
+        return $this->getEntityManager()->createQuery(sprintf(
+                "SELECT p FROM %s p JOIN p.blocks b JOIN b.translations t WHERE t.settings LIKE '%%{{ path(%d) }}%%'",
+                $this->class,
+                $page->getId()
+            ))
+            ->execute()
+        ;
+    }
+
+    /**
+     * @param Page $page
+     * @return mixed
+     */
+    public function findSnapshotLinksTo($page)
+    {
+        return $this->getEntityManager()->createQuery(sprintf(
+                "SELECT p FROM %s p JOIN p.snapshots s WHERE s.content LIKE '%%{{ path(%d) }}%%'",
+                $this->class,
+                $page->getId()
+            ))
+            ->execute()
+        ;
     }
 }
