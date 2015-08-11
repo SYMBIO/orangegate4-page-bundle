@@ -775,6 +775,10 @@
         <source>breadcrumb.link_shared_block_update</source>
         <target>Uložit</target>
       </trans-unit>
+      <trans-unit id="form.label_favicon">
+        <source>form.label_favicon</source>
+        <target>Favikona (32x32)</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

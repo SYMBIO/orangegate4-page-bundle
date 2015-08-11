@@ -257,4 +257,88 @@ class PageAdminController extends Controller
             'page'          => $block->getPage(),
         ));
     }
+
+    /**
+     * Delete action
+     *
+     * @param int|string|null $id
+     * @param Request         $request
+     *
+     * @return Response|RedirectResponse
+     *
+     * @throws NotFoundHttpException If the object does not exist
+     * @throws AccessDeniedException If access is not granted
+     */
+    public function deleteAction($id, Request $request = null)
+    {
+        if (null === $request) {
+            $request = $this->getRequest();
+        }
+        $id      = $request->get($this->admin->getIdParameter());
+        $object  = $this->admin->getObject($id);
+
+        if (!$object) {
+            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $id));
+        }
+
+        if (false === $this->admin->isGranted('DELETE', $object)) {
+            throw new AccessDeniedException();
+        }
+
+        $preResponse = $this->preDelete($request, $object);
+        if ($preResponse !== null) {
+            return $preResponse;
+        }
+
+        if ($this->getRestMethod($request) === 'DELETE') {
+            // check the csrf token
+            $this->validateCsrfToken('sonata.delete', $request);
+
+            $objectName = $this->admin->toString($object);
+
+            try {
+                $this->admin->delete($object);
+
+                if ($this->isXmlHttpRequest($request)) {
+                    return $this->renderJson(array('result' => 'ok'), 200, array(), $request);
+                }
+
+                $this->addFlash(
+                    'sonata_flash_success',
+                    $this->admin->trans(
+                        'flash_delete_success',
+                        array('%name%' => $this->escapeHtml($objectName)),
+                        'SonataAdminBundle'
+                    )
+                );
+            } catch (ModelManagerException $e) {
+                $this->handleModelManagerException($e);
+
+                if ($this->isXmlHttpRequest($request)) {
+                    return $this->renderJson(array('result' => 'error'), 200, array(), $request);
+                }
+
+                $this->addFlash(
+                    'sonata_flash_error',
+                    $this->admin->trans(
+                        'flash_delete_error',
+                        array('%name%' => $this->escapeHtml($objectName)),
+                        'SonataAdminBundle'
+                    )
+                );
+            }
+
+            return $this->redirectTo($object, $request);
+        }
+
+
+//        return $this->render($this->admin->getTemplate('delete'), array(
+        return $this->render('SymbioOrangeGatePageBundle:PageAdmin:delete.html.twig', array(
+            'block_refs' => $this->get('sonata.page.manager.page')->findBlockLinksTo($object),
+            'snap_refs'  => $this->get('sonata.page.manager.page')->findSnapshotLinksTo($object),
+            'object'     => $object,
+            'action'     => 'delete',
+            'csrf_token' => $this->getCsrfToken('sonata.delete'),
+        ), null, $request);
+    }
 }

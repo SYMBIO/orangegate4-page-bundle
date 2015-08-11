@@ -1,0 +1,59 @@
+{# @controller SymbioOangeGatePageBundle:PageAdmin:delete #}
+
+{% extends base_template %}
+
+{% block actions %}
+  {% include 'SymbioOrangeGateAdminBundle:Button:edit_button.html.twig' %}</li>
+  {% include 'SymbioOrangeGateAdminBundle:Button:create_button.html.twig' %}</li>
+  {% include 'SymbioOrangeGateAdminBundle:Button:list_button.html.twig' %}</li>
+{% endblock %}
+
+{% block tab_menu %}{{ knp_menu_render(admin.sidemenu(action), {'currentClass' : 'active', 'template': admin_pool.getTemplate('tab_menu_template')}, 'twig') }}{% endblock %}
+
+{% block content %}
+    <div class="sonata-ba-delete">
+        <div class="box box-danger">
+            <div class="box-header">
+                <h3 class="box-title">{{ 'title_delete'|trans({}, 'SonataAdminBundle') }}</h3>
+            </div>
+            <div class="box-body">
+                {% if block_refs|length > 0 %}
+                    <div class="page-ref-alert">
+                        <p>{{ 'message_delete_page_is_referenced_by_block'|trans({'%object%': admin.toString(object)}, 'SonataAdminBundle') }}</p>
+                        <ul>
+                            {% for page in block_refs %}
+                                <li><a href="{{ admin.generateObjectUrl('edit', page)}}">{{ page.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if snap_refs|length > 0 %}
+                    <div class="page-ref-alert">
+                        <p>{{ 'message_delete_page_is_referenced_by_snapshot'|trans({'%object%': admin.toString(object)}, 'SonataAdminBundle') }}</p>
+                        <ul>
+                            {% for page in snap_refs %}
+                                <li><a href="{{ admin.generateObjectUrl('edit', page)}}">{{ page.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {{ 'message_delete_confirmation'|trans({'%object%': admin.toString(object)}, 'SonataAdminBundle') }}
+            </div>
+            <div class="box-footer clearfix">
+                <form method="POST" action="{{ admin.generateObjectUrl('delete', object) }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_sonata_csrf_token" value="{{ csrf_token }}">
+
+                    <button type="submit" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> {{ 'btn_delete'|trans({}, 'SonataAdminBundle') }}</button>
+                    {% if admin.hasRoute('edit') and admin.isGranted('EDIT', object) %}
+                        {{ 'delete_or'|trans({}, 'SonataAdminBundle') }}
+
+                        <a class="btn btn-success" href="{{ admin.generateObjectUrl('edit', object) }}">
+                            <i class="glyphicon glyphicon-edit"></i>
+                            {{ 'link_action_edit'|trans({}, 'SonataAdminBundle') }}</a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

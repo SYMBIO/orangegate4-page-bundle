@@ -30,3 +30,10 @@ services:
     orangegate.site.pool:
         class: Symbio\OrangeGate\PageBundle\Entity\SitePool
         arguments: [ @sonata.page.manager.site, @session ]
+
+    orangegate.page.kernel.exception_listener:
+        class: Symbio\OrangeGate\PageBundle\Listener\ExceptionListener
+        arguments: [@sonata.page.site.selector, @sonata.page.cms_manager_selector, %kernel.debug%, @templating, @sonata.page.page_service_manager, @sonata.page.decorator_strategy, [], @logger, @security.token_storage, @sonata.admin.pool ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: -126 }
+            - { name: monolog.logger, channel: request }

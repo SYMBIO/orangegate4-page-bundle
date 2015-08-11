@@ -92,6 +92,14 @@ class SiteAdmin extends BaseAdmin
             ->with($this->trans('form_site.label_general'))
                 ->add('enabled', null, array('required' => false))
                 ->add('name')
+                ->add('favicon', 'sonata_type_model_list', array('required' => false), array(
+                    'placeholder' => 'No image selected',
+                    'link_parameters' => array(
+                        'context' => 'default',
+                        'category' => 82,
+                        'provider' => 'sonata.media.provider.image'
+                    )
+                ))
             ->end()
             ->with($this->trans('form_site.label_languages'))
                 ->add('languageVersions', 'sonata_type_collection', array(
