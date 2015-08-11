@@ -201,6 +201,11 @@ class Page implements PageInterface
      */
     protected $blocks;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="Snapshot", mappedBy="page", cascade={"remove","persist","refresh","merge","detach"})
+     */
     protected $snapshots;
 
     /**
@@ -231,6 +236,7 @@ class Page implements PageInterface
     {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
         $this->blocks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->snapshots = new \Doctrine\Common\Collections\ArrayCollection();
         $this->sources = new \Doctrine\Common\Collections\ArrayCollection();
         $this->translations = new \Doctrine\Common\Collections\ArrayCollection();
         $this->routeName     = PageInterface::PAGE_ROUTE_CMS_NAME;
@@ -1272,4 +1278,21 @@ class Page implements PageInterface
         return (count($parents) ? implode($divider, $parents) . $divider : '') . $this->getName();
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSnapshots()
+    {
+        return $this->snapshots;
+    }
+
+    /**
+     * @param \Doctrine\Common\Collections\Collection $snapshots
+     * @return $this
+     */
+    public function setSnapshots($snapshots)
+    {
+        $this->snapshots = $snapshots;
+        return $this;
+    }
 }
