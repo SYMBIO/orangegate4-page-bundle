@@ -121,7 +121,7 @@ class ExceptionListener extends BaseListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        if (($this->tokenStorage && $this->tokenStorage->getToken() && $this->tokenStorage->getToken()->getProviderKey()) && $this->tokenStorage->getToken()->getProviderKey() === 'admin' && ($event->getException() instanceof AccessDeniedHttpException || $event->getException() instanceof AccessDeniedException)) {
+        if (($this->tokenStorage && $this->tokenStorage->getToken() && !$this->tokenStorage->getToken() instanceof \Symfony\Component\Security\Core\Authentication\Token\AnonymousToken  && $this->tokenStorage->getToken()->getProviderKey()) && $this->tokenStorage->getToken()->getProviderKey() === 'admin' && ($event->getException() instanceof AccessDeniedHttpException || $event->getException() instanceof AccessDeniedException)) {
             $this->handleAccessDeniedError($event);
         }
 
