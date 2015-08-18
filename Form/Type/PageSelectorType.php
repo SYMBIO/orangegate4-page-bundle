@@ -92,7 +92,6 @@ class PageSelectorType extends AbstractType
     {
         if (
             !($currentPage && $currentPage->getId() == $page->getId())
-            && !$page->isDynamic()
         ) {
             $choices[$page->getId()] = $page->getLongName();
 
