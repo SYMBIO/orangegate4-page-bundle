@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Sonata\PageBundle\Model\PageBlockInterface;
 use Sonata\PageBundle\Model\PageInterface;
 use Sonata\PageBundle\Model\SiteInterface;
+use Sonata\PageBundle\Model\Page as ModelPage;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -1259,6 +1260,7 @@ class Page implements PageInterface
     public static function setSlugifyMethod(\Closure $slugifyMethod)
     {
         self::$slugifyMethod = $slugifyMethod;
+        ModelPage::setSlugifyMethod($slugifyMethod);
     }
 
     /**
