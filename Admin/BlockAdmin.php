@@ -8,6 +8,7 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\PageBundle\Model\PageInterface;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symbio\OrangeGate\PageBundle\Entity\BlockTranslation;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
