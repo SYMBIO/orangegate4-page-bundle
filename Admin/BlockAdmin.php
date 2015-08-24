@@ -19,6 +19,29 @@ class BlockAdmin extends BaseAdmin
 {
     protected $parentAssociationMapping = 'page';
 
+    protected $kernel;
+
+    protected $locales = array();
+
+    /**
+     * @param string $code
+     * @param string $class
+     * @param string $baseControllerName
+     * @param \AppKernel $kernel
+     */
+    public function __construct($code, $class, $baseControllerName, \AppKernel $kernel)
+    {
+        $this->kernel = $kernel;
+
+        $sites = $this->kernel->getContainer()->get('orangegate.site.pool')->getSites();
+        if ($sites && is_array($sites) && count($sites) > 0) {
+            foreach($sites as $site) {
+                $this->locales[] = $site->getLocale();
+            }
+        }
+
+        parent::__construct($code, $class, $baseControllerName);
+    }
 
     /**
      * {@inheritdoc}
@@ -80,6 +103,14 @@ class BlockAdmin extends BaseAdmin
     {
         $object = parent::getNewInstance();
 
+        if (count($object->getTranslations()) == 0) {
+            foreach($this->locales as $locale) {
+                $translation = new BlockTranslation();
+                $translation->setLocale($locale);
+                $object->addTranslation($translation);
+            }
+        }
+
         if ($this->isChild() && $this->getParentAssociationMapping()) {
             $parent = $this->getParent()->getObject($this->request->get($this->getParent()->getIdParameter()));
 
@@ -109,8 +140,8 @@ class BlockAdmin extends BaseAdmin
         }
 
         // because of current locale's translation being overwritten with base object data
-        $object->setSettings($translations[$this->getRequest()->getLocale()]->getSettings());
-        $object->setEnabled($translations[$this->getRequest()->getLocale()]->getEnabled());
+        $object->setSettings($translations[$this->locales[0]]->getSettings());
+        $object->setEnabled($translations[$this->locales[0]]->getEnabled());
     }
 
     /**
@@ -135,7 +166,7 @@ class BlockAdmin extends BaseAdmin
                         $t->setSettings($resolver->resolve($t->getSettings() ?: array()));
                     }
                 } else {
-                    $block->setSettings($resolver->resolve($block->getSettings() ?: array()));
+                    $subject->setSettings($resolver->resolve($subject->getSettings() ?: array()));
                 }
             } catch (InvalidOptionsException $e) {
                 // @TODO : add a logging error or a flash message
