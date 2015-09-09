@@ -114,6 +114,13 @@ class Site extends BaseSite
     protected $favicon;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="slug", type="string", length=255)
+     */
+    protected $slug;
+
+    /**
      * {@inheritdoc}
      */
     public function setId($id)
@@ -253,6 +260,8 @@ class Site extends BaseSite
     public function setName($name)
     {
         $this->name = $name;
+        $slugify = new \Cocur\Slugify\Slugify();
+        $this->setSlug($slugify->slugify($name));
     }
 
     /**
@@ -496,4 +505,28 @@ class Site extends BaseSite
         $this->favicon = $favicon;
         return $this;
     }
+
+    /**
+     * Get slug
+     *
+     * @return mixed
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param mixed $slug
+     * @return Site
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+        return $this;
+    }
+
+
 }
