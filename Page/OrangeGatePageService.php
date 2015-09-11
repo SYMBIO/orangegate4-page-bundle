@@ -77,17 +77,20 @@ class OrangeGatePageService extends BasePageService
         if ($page->getMetaDescription()) {
             $this->seoPage->addMeta('name', 'description', $page->getMetaDescription());
             $this->seoPage->addMeta('property', 'og:description', $page->getMetaDescription());
-        } else {
+        } elseif ($page->getSite()->getLanguageVersion($locale)->getMetaDescription()) {
             $this->seoPage->addMeta('name', 'description', $page->getSite()->getLanguageVersion($locale)->getMetaDescription());
             $this->seoPage->addMeta('property', 'og:description', $page->getSite()->getLanguageVersion($locale)->getMetaDescription());
-	}
+        }
 
         if ($page->getMetaKeyword()) {
             $this->seoPage->addMeta('name', 'keywords', $page->getMetaKeyword());
+        } elseif ($page->getSite()->getLanguageVersion($locale)->getMetaKeywords()) {
+            $this->seoPage->addMeta('name', 'keywords', $page->getSite()->getLanguageVersion($locale)->getMetaKeywords());
         }
 
-        $this->seoPage->addMeta('property', 'og:type', 'website');
         $this->seoPage->addMeta('property', 'og:site_name', $page->getSite()->getLanguageVersion($locale)->getTitle());
+        $this->seoPage->addMeta('property', 'og:url', 'http://'.$page->getSite()->getLanguageVersion($locale)->getHost());
+        $this->seoPage->addMeta('property', 'og:type', 'website');
         $this->seoPage->addHtmlAttributes('prefix', 'og: http://ogp.me/ns#');
     }
 }

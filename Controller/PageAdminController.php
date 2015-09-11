@@ -251,7 +251,7 @@ class PageAdminController extends Controller
             }
         }
 
-        return $this->render('SonataPageBundle:PageAdmin:compose_container_show.html.twig', array(
+        return $this->render('SymbioOrangeGatePageBundle:PageAdmin:compose_container_show.html.twig', array(
             'blockServices' => $blockServices,
             'container'     => $block,
             'page'          => $block->getPage(),
