@@ -19,7 +19,7 @@
             <div class="box-body">
                 {% if block_refs|length > 0 %}
                     <div class="page-ref-alert">
-                        <p>{{ 'message_delete_page_is_referenced_by_block'|trans({'%object%': admin.toString(object)}, 'SonataAdminBundle') }}</p>
+                        <p>{{ 'message_delete_page_is_referenced_by_block'|trans({'%object%': admin.toString(object)}, 'SymbioOrangeGatePageBundle') }}</p>
                         <ul>
                             {% for page in block_refs %}
                                 <li><a href="{{ admin.generateObjectUrl('edit', page)}}">{{ page.name }}</a></li>
@@ -29,7 +29,7 @@
                 {% endif %}
                 {% if snap_refs|length > 0 %}
                     <div class="page-ref-alert">
-                        <p>{{ 'message_delete_page_is_referenced_by_snapshot'|trans({'%object%': admin.toString(object)}, 'SonataAdminBundle') }}</p>
+                        <p>{{ 'message_delete_page_is_referenced_by_snapshot'|trans({'%object%': admin.toString(object)}, 'SymbioOrangeGatePageBundle') }}</p>
                         <ul>
                             {% for page in snap_refs %}
                                 <li><a href="{{ admin.generateObjectUrl('edit', page)}}">{{ page.name }}</a></li>

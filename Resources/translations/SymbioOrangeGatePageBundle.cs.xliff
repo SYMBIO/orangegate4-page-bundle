@@ -54,6 +54,14 @@
         <source>link_action_create</source>
         <target>Přidat stránku</target>
       </trans-unit>
+      <trans-unit id="message_delete_page_is_referenced_by_block">
+        <source>message_delete_page_is_referenced_by_block</source>
+        <target>Stránka je odkazovaná z těchto bloků</target>
+      </trans-unit>
+      <trans-unit id="message_delete_page_is_referenced_by_snapshot">
+        <source>message_delete_page_is_referenced_by_snapshot</source>
+        <target>Stránka je odkazovaná z těchto snapshotů</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
