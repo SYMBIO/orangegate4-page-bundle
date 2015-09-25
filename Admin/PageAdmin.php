@@ -207,6 +207,7 @@ class PageAdmin extends BaseAdmin
                     )
                 ))
                 ->add('position')
+                ->add('cssClass')
             ->end();
 /*
         if ($this->hasSubject() && !$this->getSubject()->isInternal()) {

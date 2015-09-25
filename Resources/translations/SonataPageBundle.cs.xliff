@@ -779,6 +779,10 @@
         <source>form.label_favicon</source>
         <target>Favikona (32x32)</target>
       </trans-unit>
+      <trans-unit id="form.label_css_class">
+        <source>form.label_css_class</source>
+        <target>CSS třída</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

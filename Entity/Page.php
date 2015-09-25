@@ -223,6 +223,11 @@ class Page implements PageInterface
     protected $icon;
 
     /**
+     * @ORM\Column(name="css_class", type="string", length=255, nullable=true)
+     */
+    protected $cssClass;
+
+    /**
      * @ORM\OneToMany(targetEntity="PageTranslation", mappedBy="object", indexBy="locale", cascade={"all"}, orphanRemoval=true)
      * @Assert\Valid
      */
@@ -1295,6 +1300,28 @@ class Page implements PageInterface
     public function setSnapshots($snapshots)
     {
         $this->snapshots = $snapshots;
+        return $this;
+    }
+
+    /**
+     * Get cssClass
+     *
+     * @return mixed
+     */
+    public function getCssClass()
+    {
+        return $this->cssClass;
+    }
+
+    /**
+     * Set cssClass
+     *
+     * @param mixed $cssClass
+     * @return Site
+     */
+    public function setCssClass($cssClass)
+    {
+        $this->cssClass = $cssClass;
         return $this;
     }
 }
