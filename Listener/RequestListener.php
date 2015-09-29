@@ -2,6 +2,7 @@
 
 namespace Symbio\OrangeGate\PageBundle\Listener;
 
+use Doctrine\ORM\EntityRepository;
 use Sonata\PageBundle\CmsManager\CmsManagerSelectorInterface;
 use Sonata\PageBundle\Site\SiteSelectorInterface;
 use Sonata\PageBundle\Exception\InternalErrorException;
@@ -9,11 +10,33 @@ use Sonata\PageBundle\Exception\PageNotFoundException;
 use Sonata\PageBundle\CmsManager\DecoratorStrategyInterface;
 use Sonata\PageBundle\Model\PageInterface;
 
+use Symbio\OrangeGate\PageBundle\Entity\Redirect;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\Request;
 
 class RequestListener extends \Sonata\PageBundle\Listener\RequestListener
 {
+
+    /**
+     * @var EntityRepository
+     */
+    protected $redirectRepository;
+
+    /**
+     * Constructor.
+     *
+     * @param CmsManagerSelectorInterface $cmsSelector       Cms manager selector
+     * @param SiteSelectorInterface       $siteSelector      Site selector
+     * @param DecoratorStrategyInterface  $decoratorStrategy Decorator strategy
+     */
+    public function __construct(CmsManagerSelectorInterface $cmsSelector, SiteSelectorInterface $siteSelector, DecoratorStrategyInterface $decoratorStrategy, EntityRepository $redirectRepository)
+    {
+        parent::__construct($cmsSelector, $siteSelector, $decoratorStrategy);
+
+        $this->redirectRepository = $redirectRepository;
+    }
+
     /**
      * Filter the `core.request` event to decorated the action
      *
@@ -27,6 +50,16 @@ class RequestListener extends \Sonata\PageBundle\Listener\RequestListener
     public function onCoreRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
+
+        $redirects = $this->redirectRepository->findBy(array('enabled' => true), array('position' => 'ASC'));
+
+        /** @var Redirect $redirect */
+        foreach ($redirects as $redirect) {
+            if ($destinationUrl = $redirect->matches($request)) {
+                $event->setResponse(new RedirectResponse($destinationUrl));
+                return;
+            }
+        }
 
         $cms = $this->cmsSelector->retrieve();
         if (!$cms) {
