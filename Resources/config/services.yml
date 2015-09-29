@@ -19,6 +19,14 @@ services:
         calls:
             - [ setTranslationDomain, [ SonataPageBundle ] ]
 
+    orangegate.page.admin.redirect:
+        class: Symbio\OrangeGate\PageBundle\Admin\RedirectAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: sonata_page, label: redirect, label_catalogue: %sonata.page.admin.page.translation_domain%, label_translator_strategy: sonata.admin.label.strategy.underscore }
+        arguments: [null, Symbio\OrangeGate\PageBundle\Entity\Redirect, null]
+        calls:
+            - [ setTranslationDomain, [ SonataPageBundle ] ]
+
     orangegate.security.access.page_voter:
         class: Symbio\OrangeGate\PageBundle\Security\Authorization\Voter\PageVoter
         arguments: [ @service_container ]
@@ -49,3 +57,16 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: -126 }
             - { name: monolog.logger, channel: request }
+
+    orangegate.page.repository.redirect:
+        class:           Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.entity_manager
+        factory_method:  getRepository
+        arguments: [ Symbio\OrangeGate\PageBundle\Entity\Redirect ]
+
+    sonata.page.request_listener:
+        class: %sonata.page.request_listener.class%
+        scope: request
+        arguments: [ @sonata.page.cms_manager_selector, @sonata.page.site.selector, @sonata.page.decorator_strategy, @orangegate.page.repository.redirect ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onCoreRequest, priority: 40 }

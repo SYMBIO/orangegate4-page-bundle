@@ -484,11 +484,11 @@
       </trans-unit>
       <trans-unit id="121" resname="list.label_site">
           <source>list.label_site</source>
-          <target>Web</target>
+          <target>Weby</target>
       </trans-unit>
       <trans-unit id="122" resname="site">
           <source>site</source>
-          <target>Web</target>
+          <target>Weby</target>
       </trans-unit>
       <trans-unit id="123" resname="show.label_is_default">
           <source>show.label_is_default</source>
@@ -731,6 +731,10 @@
         <source>form.label_name</source>
         <target>Název</target>
       </trans-unit>
+      <trans-unit id="182" resname="redirect">
+          <source>redirect</source>
+          <target>Přesměrování</target>
+      </trans-unit>
       <trans-unit id="show.label_settings">
         <source>show.label_settings</source>
         <target>Nastavení</target>
@@ -782,6 +786,30 @@
       <trans-unit id="form.label_css_class">
         <source>form.label_css_class</source>
         <target>CSS třída</target>
+      </trans-unit>
+      <trans-unit id="list.label_source_url">
+        <source>list.label_source_url</source>
+        <target>Zdrojová URL</target>
+      </trans-unit>
+      <trans-unit id="list.label_destination_url">
+        <source>list.label_destination_url</source>
+        <target>Cílová URL</target>
+      </trans-unit>
+      <trans-unit id="list.label_note">
+        <source>list.label_note</source>
+        <target>Poznámka</target>
+      </trans-unit>
+      <trans-unit id="form.label_source_url">
+        <source>form.label_source_url</source>
+        <target>Zdrojová URL</target>
+      </trans-unit>
+      <trans-unit id="form.label_destination_url">
+        <source>form.label_destination_url</source>
+        <target>Cílová URL</target>
+      </trans-unit>
+      <trans-unit id="form.label_note">
+        <source>form.label_note</source>
+        <target>Poznámka</target>
       </trans-unit>
     </body>
   </file>
