@@ -28,8 +28,8 @@ class Redirect
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Site", inversedBy="languageVersions", cascade={"remove","persist","refresh","merge","detach"})
-     * @ORM\JoinColumn(name="site_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Site", inversedBy="languageVersions")
+     * @ORM\JoinColumn(name="site_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $site;
 
@@ -264,16 +264,43 @@ class Redirect
             return false;
         }
 
-        if ($match_host) {
-            $found = preg_match('/^'.preg_quote($parsed_src['path'], '/').'.*$/', $request->getPathInfo());
-        } else {
-            $found = preg_match('/^'.preg_quote($src, '/').'.*$/', $request->getPathInfo());
+        $requested_url = $request->getPathInfo();
+        if ($request->getQueryString()) {
+            $requested_url .= '?'.$request->getQueryString();
         }
+
+        if ($match_host) {
+            $source_regex = $parsed_src['path'];
+        } else {
+            $source_regex = $src;
+        }
+
+        // preparation of regexp
+        $source_regex = $source_regex;
+        $source_regex = str_replace('/', '\\/', $source_regex);
+        $source_regex = str_replace('?', '\\?', $source_regex);
+
+        $found = preg_match_all('/^'.$source_regex.'.*$/', $requested_url, $matches);
 
         if (!$found) {
             return false;
         }
 
-        return $this->getDestinationUrl();
+        $destination_url = $this->getDestinationUrl();
+
+        // replace tokens
+        if (count($matches[0]) > 0) {
+            $replacements = array();
+
+            foreach ($matches[1] as $k => $m) {
+                $replacements['$'.($k + 1)] = $m;
+            }
+
+            $destination_url = strtr($destination_url, $replacements);
+        }
+
+        $destination_url = $request->getBaseUrl().$destination_url;
+
+        return $destination_url;
     }
 }
