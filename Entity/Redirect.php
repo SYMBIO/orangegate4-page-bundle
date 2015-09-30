@@ -275,7 +275,7 @@ class Redirect
             $source_regex = $src;
         }
 
-        // preparation of regexp
+        // prepare regexp
         $source_regex = $source_regex;
         $source_regex = str_replace('/', '\\/', $source_regex);
         $source_regex = str_replace('?', '\\?', $source_regex);
