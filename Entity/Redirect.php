@@ -249,6 +249,13 @@ class Redirect
         return $this->getSourceUrl();
     }
 
+    /**
+     * This method validates a redirect against request. If they match,
+     * returns destination URL for redirection.
+     *
+     * @param Request $request
+     * @return bool|mixed|string
+     */
     public function matches(Request $request)
     {
         $src = $this->getSourceUrl();
