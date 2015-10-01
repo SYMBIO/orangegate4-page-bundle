@@ -55,7 +55,7 @@ class RequestListener extends \Sonata\PageBundle\Listener\RequestListener
 
         /** @var Redirect $redirect */
         foreach ($redirects as $redirect) {
-            if ($destinationUrl = $redirect->matches($request)) {
+            if ($destinationUrl = $this->redirectMatchesRequest($redirect, $request)) {
                 $event->setResponse(new RedirectResponse($destinationUrl));
                 return;
             }
@@ -100,5 +100,66 @@ class RequestListener extends \Sonata\PageBundle\Listener\RequestListener
         } catch (PageNotFoundException $e) {
             return;
         }
+    }
+
+    /**
+     * This method validates a redirect against request. If they match,
+     * returns destination URL for redirection.
+     *
+     * @param Request $request
+     * @return bool|string
+     */
+    protected function redirectMatchesRequest(Redirect $redirect, Request $request)
+    {
+        $source_url = $redirect->getSourceUrl();
+        $destination_url = $redirect->getDestinationUrl();
+        $match_host = false;
+
+        if (true === strpos($source_url, '://')) {
+            $match_host = true;
+            $parsed_src = parse_url($source_url);
+        }
+
+        // test hostname first
+        if ($match_host && !preg_match('/^'.preg_quote($parsed_src['host'], '/').'$/', $request->getHost())) {
+            return false;
+        }
+
+        $requested_url = $request->getPathInfo();
+        if ($request->getQueryString()) {
+            $requested_url .= '?'.$request->getQueryString();
+        }
+
+        if ($match_host) {
+            $source_regex = $parsed_src['path'];
+        } else {
+            $source_regex = $source_url;
+        }
+
+        // prepare regexp
+        $source_regex = $source_regex;
+        $source_regex = str_replace('/', '\\/', $source_regex);
+        $source_regex = str_replace('?', '\\?', $source_regex);
+
+        $found = preg_match_all('/^'.$source_regex.'.*$/', $requested_url, $matches);
+
+        if (!$found) {
+            return false;
+        }
+
+        // replace tokens
+        if (count($matches[0]) > 0) {
+            $replacements = array();
+
+            foreach ($matches[1] as $k => $m) {
+                $replacements['$'.($k + 1)] = $m;
+            }
+
+            $destination_url = strtr($destination_url, $replacements);
+        }
+
+        $destination_url = $request->getBaseUrl().$destination_url;
+
+        return $destination_url;
     }
 }

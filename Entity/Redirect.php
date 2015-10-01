@@ -28,8 +28,8 @@ class Redirect
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Site", inversedBy="languageVersions", cascade={"remove","persist","refresh","merge","detach"})
-     * @ORM\JoinColumn(name="site_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Site", inversedBy="languageVersions")
+     * @ORM\JoinColumn(name="site_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $site;
 
@@ -249,31 +249,4 @@ class Redirect
         return $this->getSourceUrl();
     }
 
-    public function matches(Request $request)
-    {
-        $src = $this->getSourceUrl();
-        $match_host = false;
-
-        if (true === strpos($src, '://')) {
-            $match_host = true;
-            $parsed_src = parse_url($src);
-        }
-
-        // test hostname first
-        if ($match_host && !preg_match('/^'.preg_quote($parsed_src['host'], '/').'$/', $request->getHost())) {
-            return false;
-        }
-
-        if ($match_host) {
-            $found = preg_match('/^'.preg_quote($parsed_src['path'], '/').'.*$/', $request->getPathInfo());
-        } else {
-            $found = preg_match('/^'.preg_quote($src, '/').'.*$/', $request->getPathInfo());
-        }
-
-        if (!$found) {
-            return false;
-        }
-
-        return $this->getDestinationUrl();
-    }
 }
