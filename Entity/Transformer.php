@@ -71,6 +71,7 @@ class Transformer extends BaseTransformer
         $content['slug']             = $page->getSlug();
         $content['parent_id']        = $page->getParent() ? $page->getParent()->getId() : null;
         $content['target_id']        = $page->getTarget() ? $page->getTarget()->getId() : null;
+        $content['cssClass']         = $page->getCssClass();
 
         $content['blocks'] = array();
         foreach ($page->getBlocks() as $block) {
@@ -102,6 +103,7 @@ class Transformer extends BaseTransformer
             $content['slug']             = $ptrans->getSlug();
             $content['parent_id']        = $page->getParent() ? $page->getParent()->getId() : null;
             $content['target_id']        = $page->getTarget() ? $page->getTarget()->getId() : null;
+            $content['cssClass']         = $page->getCssClass();
 
             $content['blocks'] = array();
             foreach ($page->getBlocks() as $block) {
@@ -179,6 +181,7 @@ class Transformer extends BaseTransformer
         $page->setSlug($content['slug']);
         $page->setTemplateCode($content['template_code']);
         $page->setRequestMethod($content['request_method']);
+        $page->setCssClass($content['cssClass']);
 
         $createdAt = new \DateTime;
         $createdAt->setTimestamp($content['created_at']);

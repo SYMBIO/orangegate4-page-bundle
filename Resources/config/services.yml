@@ -69,4 +69,4 @@ services:
         scope: request
         arguments: [ @sonata.page.cms_manager_selector, @sonata.page.site.selector, @sonata.page.decorator_strategy, @orangegate.page.repository.redirect ]
         tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onCoreRequest, priority: 40 }
+            - { name: kernel.event_listener, event: kernel.request, method: onCoreRequest, priority: 30 }
