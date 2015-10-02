@@ -66,7 +66,12 @@ services:
 
     sonata.page.request_listener:
         class: %sonata.page.request_listener.class%
-        scope: request
         arguments: [ @sonata.page.cms_manager_selector, @sonata.page.site.selector, @sonata.page.decorator_strategy, @orangegate.page.repository.redirect ]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onCoreRequest, priority: 30 }
+
+    orangegate.page.redirect_listener:
+        class: Symbio\OrangeGate\PageBundle\Listener\RedirectListener
+        arguments: [ @orangegate.page.repository.redirect ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: 64 }
