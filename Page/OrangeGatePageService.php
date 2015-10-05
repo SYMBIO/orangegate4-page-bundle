@@ -65,14 +65,16 @@ class OrangeGatePageService extends BasePageService
         }
 
         if (!$page->getParent()) {
-            $this->seoPage->setTitle($page->getSite()->getLanguageVersion($locale)->getTitle());
+            $title = $page->getSite()->getLanguageVersion($locale)->getTitle();
         } else {
             if ($page->getTitle()) {
-                $this->seoPage->setTitle($this->seoPage->getTitle().' - '.$page->getTitle());
+                $title = $this->seoPage->getTitle().' - '.$page->getTitle();
             } elseif ($page->getName()) {
-                $this->seoPage->setTitle($this->seoPage->getTitle().' - '.$page->getName());
+                $title = $this->seoPage->getTitle().' - '.$page->getName();
             }
         }
+        $this->seoPage->setTitle($title);
+        $this->seoPage->addMeta('property', 'og:title', $title);
 
         if ($page->getMetaDescription()) {
             $this->seoPage->addMeta('name', 'description', $page->getMetaDescription());
