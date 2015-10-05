@@ -70,7 +70,7 @@ class RedirectListener implements EventSubscriberInterface
         $destination_url = $redirect->getDestinationUrl();
         $match_host = false;
 
-        if (true === strpos($source_url, '://')) {
+        if (false !== strpos($source_url, '://')) {
             $match_host = true;
             $parsed_src = parse_url($source_url);
         }
