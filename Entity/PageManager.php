@@ -161,7 +161,7 @@ class PageManager extends BasePageManager implements PageManagerInterface
     {
         return $this->getEntityManager()->createQuery(sprintf(
                 "SELECT p FROM %s p JOIN p.blocks b JOIN b.translations t
-                  WHERE t.settings LIKE '%%{{ path(%d) }}%%' OR
+                  WHERE t.settings LIKE '%%{{ url(%d) }}%%' OR
                     (t.settings LIKE '%%\"type\":\"internal\"%%' AND t.settings LIKE '%%\"internal_link_page_id\":%d%%')",
                 $this->class,
                 $page->getId(),
@@ -178,7 +178,7 @@ class PageManager extends BasePageManager implements PageManagerInterface
     public function findSnapshotLinksTo($page)
     {
         return $this->getEntityManager()->createQuery(sprintf(
-                "SELECT p FROM %s p JOIN p.snapshots s WHERE s.content LIKE '%%{{ path(%d) }}%%'",
+                "SELECT p FROM %s p JOIN p.snapshots s WHERE s.content LIKE '%%{{ url(%d) }}%%'",
                 $this->class,
                 $page->getId()
             ))
