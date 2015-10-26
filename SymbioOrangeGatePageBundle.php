@@ -11,6 +11,7 @@
 namespace Symbio\OrangeGate\PageBundle;
 
 use Symbio\OrangeGate\PageBundle\DependencyInjection\Compiler\AddSitePoolCompilerPass;
+use Symbio\OrangeGate\PageBundle\DependencyInjection\Compiler\CreateSnapshotConsumerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -38,5 +39,6 @@ class SymbioOrangeGatePageBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new AddSitePoolCompilerPass());
+        $container->addCompilerPass(new CreateSnapshotConsumerCompilerPass());
     }
 }
