@@ -181,7 +181,9 @@ class Transformer extends BaseTransformer
         $page->setSlug($content['slug']);
         $page->setTemplateCode($content['template_code']);
         $page->setRequestMethod($content['request_method']);
-        $page->setCssClass($content['cssClass']);
+        if (array_key_exists('cssClass', $content)) {
+            $page->setCssClass($content['cssClass']);
+        }
 
         $createdAt = new \DateTime;
         $createdAt->setTimestamp($content['created_at']);
