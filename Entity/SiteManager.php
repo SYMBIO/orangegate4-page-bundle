@@ -17,14 +17,17 @@ class SiteManager extends BaseSiteManager
     public function findByHost($host)
     {
         return $this->getEntityManager()->createQuery('
-            SELECT s, lv
-            FROM SymbioOrangeGatePageBundle:Site s
-            INNER JOIN s.languageVersions lv
-            WHERE
-              (lv.host = \'localhost\' OR lv.host = :host)
-              AND lv.enabled = 1
-              AND s.enabled = 1
-        ')->setParameter('host', $host)
-        ->execute();
+                SELECT s, lv
+                FROM SymbioOrangeGatePageBundle:Site s
+                INNER JOIN s.languageVersions lv
+                WHERE
+                  (s.isDefault = 1 OR lv.host = \'localhost\' OR lv.host = :host OR lv.host = :wwwhost)
+                  AND lv.enabled = 1
+                  AND s.enabled = 1
+                ORDER BY s.isDefault ASC, lv.isDefault ASC
+            ')
+            ->setParameter('host', $host)
+            ->setParameter('wwwhost', 'www.'.$host)
+            ->execute();
     }
 }

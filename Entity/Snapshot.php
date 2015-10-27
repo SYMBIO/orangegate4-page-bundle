@@ -121,14 +121,14 @@ class Snapshot implements SnapshotInterface
 
     /**
      * @var \Symbio\OrangeGate\PageBundle\Entity\Site
-     * @ORM\ManyToOne(targetEntity="Site", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Site")
      * @ORM\JoinColumn(name="site_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $site;
 
     /**
      * @var \Symbio\OrangeGate\PageBundle\Entity\Page
-     * @ORM\ManyToOne(targetEntity="Page", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Page")
      * @ORM\JoinColumn(name="page_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $page;

@@ -160,7 +160,7 @@ class Page implements PageInterface
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="Page", mappedBy="parent", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="Page", mappedBy="parent")
      * @ORM\OrderBy({"position":"ASC"})
      */
     protected $children;
@@ -174,14 +174,14 @@ class Page implements PageInterface
 
     /**
      * @var \Symbio\OrangeGate\PageBundle\Entity\Site
-     * @ORM\ManyToOne(targetEntity="Site", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Site")
      * @ORM\JoinColumn(name="site_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $site;
 
     /**
      * @var \Symbio\OrangeGate\PageBundle\Entity\Page
-     * @ORM\ManyToOne(targetEntity="Page", inversedBy="children", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Page", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $parent;
@@ -190,7 +190,7 @@ class Page implements PageInterface
 
     /**
      * @var \Symbio\OrangeGate\PageBundle\Entity\Page
-     * @ORM\ManyToOne(targetEntity="Page", inversedBy="sources", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Page", inversedBy="sources")
      * @ORM\JoinColumn(name="target_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $target;
@@ -198,14 +198,14 @@ class Page implements PageInterface
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="Block", mappedBy="page", cascade={"remove","persist","refresh","merge","detach"})
+     * @ORM\OneToMany(targetEntity="Block", mappedBy="page")
      */
     protected $blocks;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="Snapshot", mappedBy="page", cascade={"remove","persist","refresh","merge","detach"})
+     * @ORM\OneToMany(targetEntity="Snapshot", mappedBy="page")
      */
     protected $snapshots;
 
@@ -217,7 +217,7 @@ class Page implements PageInterface
     protected $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Symbio\OrangeGate\MediaBundle\Entity\Media", cascade={"remove","persist","refresh","merge","detach"})
+     * @ORM\ManyToOne(targetEntity="Symbio\OrangeGate\MediaBundle\Entity\Media", cascade={"all"})
      * @ORM\JoinColumn(name="icon_id", referencedColumnName="id", nullable=true)
      */
     protected $icon;

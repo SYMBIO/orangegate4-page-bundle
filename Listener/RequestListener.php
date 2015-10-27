@@ -34,9 +34,14 @@ class RequestListener extends \Sonata\PageBundle\Listener\RequestListener
 
         $site = $this->siteSelector->retrieve();
 
+        $isRequestDecorable = $this->decoratorStrategy->isRequestDecorable($request);
+
         if (!$site) {
-            return;
-            throw new InternalErrorException('No site available for the current request with uri '.htmlspecialchars($request->getUri(), ENT_QUOTES));
+            if ($isRequestDecorable) {
+                throw new InternalErrorException('No site available for the current request with uri '.htmlspecialchars($request->getUri(), ENT_QUOTES));
+            } else {
+                return;
+            }
         }
 
         if ($site->getLocale() && $site->getLocale() != $request->get('_locale')) {
@@ -46,25 +51,20 @@ class RequestListener extends \Sonata\PageBundle\Listener\RequestListener
         $request->setLocale($site->getLocale());
 
         // true cms page
-        if ($request->get('_route') == PageInterface::PAGE_ROUTE_CMS_NAME) {
+        if ($request->get('_route') === PageInterface::PAGE_ROUTE_CMS_NAME) {
             return;
         }
 
-        if (!$this->decoratorStrategy->isRequestDecorable($request)) {
+        if (!$isRequestDecorable) {
             return;
         }
 
-        try {
-            $page = $cms->getPageByRouteName($site, $request->get('_route'));
+        $page = $cms->getPageByRouteName($site, $request->get('_route'));
 
-            if (!$page->getEnabled() && !$this->cmsSelector->isEditor()) {
-                throw new PageNotFoundException(sprintf('The page is not enabled : id=%s', $page->getId()));
-            }
-
-            $cms->setCurrentPage($page);
-
-        } catch (PageNotFoundException $e) {
-            return;
+        if (!$page->getEnabled() && !$this->cmsSelector->isEditor()) {
+            throw new PageNotFoundException(sprintf('The page is not enabled : id=%s', $page->getId()));
         }
+
+        $cms->setCurrentPage($page);
     }
 }
