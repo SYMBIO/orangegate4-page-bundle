@@ -16,12 +16,15 @@ class SiteManager extends BaseSiteManager
      */
     public function findByHost($host)
     {
+        // remove trailing www. cause we automatically add it to test
+        $host = preg_replace('/^www[.]/', '', $host);
+
         return $this->getEntityManager()->createQuery('
                 SELECT s, lv
                 FROM SymbioOrangeGatePageBundle:Site s
                 INNER JOIN s.languageVersions lv
                 WHERE
-                  (lv.host = \'localhost\' OR lv.host = :host OR lv.host = :wwwhost)
+                  lv.host in (:wwwhost, :host, \'localhost\')
                   AND lv.enabled = 1
                   AND s.enabled = 1
                 ORDER BY lv.isDefault ASC
