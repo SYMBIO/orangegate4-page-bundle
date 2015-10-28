@@ -19,6 +19,8 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 
 use Sonata\PageBundle\Route\RoutePageGenerator;
+use Symbio\OrangeGate\PageBundle\Entity\LanguageVersion;
+use Symbio\OrangeGate\PageBundle\Entity\Site;
 
 /**
  * Admin definition for the Site class
@@ -143,4 +145,25 @@ class SiteAdmin extends BaseAdmin
             $lv->setSite($object);
         }
     }
+
+    public function getNewInstance()
+    {
+        /**
+         * @var Site $object
+         */
+        $object = parent::getNewInstance();
+        $object->setEnabled(true);
+
+        $lv = new LanguageVersion();
+        $lv->setEnabled(true);
+        $lv->setName('Default');
+        $lv->setHost('localhost');
+        $lv->setRelativePath('');
+        $lv->setLocale('cs');
+        $lv->setIsDefault(true);
+        $object->addLanguageVersion($lv);
+
+        return $object;
+    }
+
 }
