@@ -8,7 +8,6 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
-
 use Sonata\PageBundle\Route\RoutePageGenerator;
 
 class LanguageVersionAdmin extends BaseAdmin
@@ -96,13 +95,5 @@ class LanguageVersionAdmin extends BaseAdmin
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->add('snapshots', $this->getRouterIdParameter().'/snapshots');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function postPersist($object)
-    {
-        $this->routePageGenerator->update($object);
     }
 }
