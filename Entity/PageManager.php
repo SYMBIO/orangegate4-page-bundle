@@ -86,9 +86,10 @@ class PageManager extends BasePageManager implements PageManagerInterface
         if (count($site->getLanguageVersions()) > 0) {
             $query->setHint(
                 \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
-                $site->getLanguageVersions()[0]->getLocale()
+                $site->getDefaultLocale()
             );
         } else {
+            // this is only due to backward compatibility, language version should always exist
             $query->setHint(
                 \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
                 $site->getLocale()

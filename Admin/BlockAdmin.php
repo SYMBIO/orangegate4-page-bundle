@@ -34,13 +34,6 @@ class BlockAdmin extends BaseAdmin
     {
         $this->kernel = $kernel;
 
-        $sites = $this->kernel->getContainer()->get('orangegate.site.pool')->getSites();
-        if ($sites && is_array($sites) && count($sites) > 0) {
-            foreach($sites as $site) {
-                $this->locales[] = $site->getLocale();
-            }
-        }
-
         parent::__construct($code, $class, $baseControllerName);
     }
 
@@ -103,14 +96,6 @@ class BlockAdmin extends BaseAdmin
     public function getNewInstance()
     {
         $object = parent::getNewInstance();
-
-        if (count($object->getTranslations()) == 0) {
-            foreach($this->locales as $locale) {
-                $translation = new BlockTranslation();
-                $translation->setLocale($locale);
-                $object->addTranslation($translation);
-            }
-        }
 
         if ($this->isChild() && $this->getParentAssociationMapping()) {
             $parent = $this->getParent()->getObject($this->request->get($this->getParent()->getIdParameter()));
