@@ -2,6 +2,7 @@
 
 namespace Symbio\OrangeGate\PageBundle\Site;
 
+use Ivory\CKEditorBundle\Exception\Exception;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,20 +43,6 @@ class HostPathSiteSelector extends ParentSiteSelector
                 $this->site = $site;
                 $request->setLocale($lv->getLocale());
                 return $results[2];
-            }
-
-            // default language versions should be last in the list, so when we get to them
-            // it's definite that no other language version matched
-            if ($lv->getIsDefault()) {
-                $site->setHost($lv->getHost());
-                $site->setLocale($lv->getLocale());
-                $site->setRelativePath($lv->getRelativePath());
-                $site->setTitle($lv->getTitle());
-                $site->setMetaDescription($lv->getMetaDescription());
-                $site->setMetaKeywords($lv->getMetaKeywords());
-                $this->site = $site;
-                $request->setLocale($lv->getLocale());
-                return $requestPathInfo;
             }
         }
 
