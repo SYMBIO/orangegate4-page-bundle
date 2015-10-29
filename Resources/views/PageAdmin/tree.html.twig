@@ -19,8 +19,8 @@
                     {% if page.parent %}<i class="fa fa-caret-right"></i>{% endif %}
                     <i class="fa page-tree__item__is-hybrid fa-{% if page.isHybrid %}gears{% else %}code{% endif %}"></i>
                     {% if is_granted('EDIT') or is_granted('EDIT', page) %}
-                        <a class="page-tree__item__edit" href="{{ admin.generateObjectUrl('compose', page) }}">{{ page.name }}</a>
-                        <i class="text-muted">{{ page.url }}</i>
+                        <a class="page-tree__item__edit" href="{{ admin.generateObjectUrl('compose', page) }}">{{ page.translations[locale].name }}</a>
+                        <i class="text-muted">{{ page.translations[locale].url }}</i>
                         <a class="btn btn-primary btn-xs pull-right" style="margin-left: 20px" href="{{ admin.generateObjectUrl('edit', page) }}"><i class="fa fa-pencil-square-o"> Upravit metadata</i></a>
                     {% else %}
                         <span class="page-tree__item__edit">{{ page.name }}</span>

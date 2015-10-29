@@ -158,6 +158,7 @@ class PageAdminController extends Controller
         $sitePool = $this->get('orangegate.site.pool');
         $sites = $sitePool->getSites();
         $currentSite = $sitePool->getCurrentSite($request);
+        $locale = $currentSite->getDefaultLocale();
 
         if ($currentSite) {
             $pageManager = $this->get('sonata.page.manager.page');
@@ -175,6 +176,7 @@ class PageAdminController extends Controller
             'action' => 'tree',
             'sites' => $sites,
             'currentSite' => $currentSite,
+            'locale' => $locale,
             'pages' => $pages,
             'form' => $formView,
             'csrf_token' => $this->getCsrfToken('sonata.batch'),

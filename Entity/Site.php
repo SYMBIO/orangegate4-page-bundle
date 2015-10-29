@@ -352,6 +352,21 @@ class Site extends BaseSite
         return $this->locale;
     }
 
+    public function getDefaultLocale()
+    {
+        if ($this->languageVersions->count() > 0) {
+            foreach ($this->languageVersions as $lv) {
+                if ($lv->getIsDefault()) {
+                    return $lv->getLocale();
+                }
+            }
+
+            return $this->languageVersions->first()->getLocale();
+        } else {
+            return 'cs';
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
