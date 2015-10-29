@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% import _self as tree %}
-{% macro pages(pages, admin, rootPages) %}
+{% macro pages(pages, admin, rootPages, locale) %}
     <ul{% if rootPages %} class="page-tree"{% endif %}>
         {% for page in pages if (not page.parent or not rootPages)%}
             <li>
@@ -29,7 +29,7 @@
                     {% if page.edited %}<span class="label label-warning pull-left">edited</span>{% endif %}
                 </div>
                 {% if page.children|length %}
-                    {{ _self.pages(page.children, admin, false) }}
+                    {{ _self.pages(page.children, admin, false, locale) }}
                 {% endif %}
             </li>
         {% endfor %}
@@ -73,7 +73,7 @@
         <div class="box-header">
         </div>
         <div class="box-content">
-            {{ tree.pages(pages, admin, true) }}
+            {{ tree.pages(pages, admin, true, locale) }}
         </div>
     </div>
 {% endblock %}

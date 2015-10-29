@@ -514,7 +514,7 @@ class Page implements PageInterface
 
     public function addTranslation(\Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation $translation)
     {
-        if (!$this->translations->contains($translation)) {
+        if (!$this->translations->containsKey($translation->getLocale())) {
             $translation->setObject($this);
             $this->translations->set($translation->getLocale(), $translation);
         }
