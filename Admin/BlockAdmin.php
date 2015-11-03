@@ -116,7 +116,8 @@ class BlockAdmin extends BaseAdmin
         parent::preUpdate($object);
 
         if ($object->getPage()) {
-            $object->setSite($object->getPage()->getSite());
+            $site = $object->getPage()->getSite();
+            $object->setSite($site);
         }
 
         $translations = $object->getTranslations();
@@ -126,8 +127,13 @@ class BlockAdmin extends BaseAdmin
         }
 
         // because of current locale's translation being overwritten with base object data
-        $object->setSettings($translations[$this->locales[0]]->getSettings());
-        $object->setEnabled($translations[$this->locales[0]]->getEnabled());
+        if (isset($site)) {
+            $locale = $site->getDefaultLocale();
+            if ($locale) {
+                $object->setSettings($translations[$locale]->getSettings());
+                $object->setEnabled($translations[$locale]->getEnabled());
+            }
+        }
     }
 
     /**
