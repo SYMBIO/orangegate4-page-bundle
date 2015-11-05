@@ -500,14 +500,7 @@ class Site extends BaseSite
      */
     public function getLocales()
     {
-        $locales = array();
-        foreach ($this->getLanguageVersions() as $lv) {
-            /**
-             * @var LanguageVersion $lv
-             */
-            $locales[] = $lv->getLocale();
-        }
-        return $locales;
+        return $this->getLanguageVersions()->getKeys();
     }
 
     public function getFavicon()
