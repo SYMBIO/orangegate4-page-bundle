@@ -59,12 +59,16 @@ class RequestListener extends \Sonata\PageBundle\Listener\RequestListener
             return;
         }
 
-        $page = $cms->getPageByRouteName($site, $request->get('_route'));
+        try {
+            $page = $cms->getPageByRouteName($site, $request->get('_route'));
 
-        if (!$page->getEnabled() && !$this->cmsSelector->isEditor()) {
-            throw new PageNotFoundException(sprintf('The page is not enabled : id=%s', $page->getId()));
+            if (!$page->getEnabled() && !$this->cmsSelector->isEditor()) {
+                throw new PageNotFoundException(sprintf('The page is not enabled : id=%s', $page->getId()));
+            }
+
+            $cms->setCurrentPage($page);
+        } catch (PageNotFoundException $e) {
+            return;
         }
-
-        $cms->setCurrentPage($page);
     }
 }
