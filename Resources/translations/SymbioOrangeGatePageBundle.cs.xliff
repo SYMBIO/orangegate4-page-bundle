@@ -62,6 +62,10 @@
         <source>message_delete_page_is_referenced_by_snapshot</source>
         <target>Stránka je odkazovaná z těchto snapshotů</target>
       </trans-unit>
+      <trans-unit id="no_sites">
+        <source>no_sites</source>
+        <target>Nemáte bohužel přístup k žádnemu webu. Požádejte správce o přístup.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

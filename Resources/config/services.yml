@@ -1,4 +1,18 @@
 services:
+    sonata.page.admin.page:
+        class: %sonata.page.admin.page.class%
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: sonata_page, label_catalogue: %sonata.page.admin.page.translation_domain%, label: page, label_translator_strategy: sonata.admin.label.strategy.underscore }
+        arguments: [ null, %sonata.page.admin.page.entity%, %sonata.page.admin.page.controller% ]
+        calls:
+            - [ addChild, [ @sonata.page.admin.block ] ]
+            - [ addChild, [ @sonata.page.admin.snapshot ] ]
+            - [ setPageManager, [ @sonata.page.manager.page ] ]
+            - [ setCacheManager, [ @sonata.cache.manager ] ]
+            - [ setSitePool, [ @orangegate.site.pool ] ]
+            - [ setTranslationDomain, [ %sonata.page.admin.page.translation_domain% ] ]
+            - [ setTemplates, [[ SonataPageBundle:PageAdmin:list.html.twig ]] ]
+
     sonata.page.admin.block:
             class: %sonata.page.admin.block.class%
             tags:
@@ -47,9 +61,17 @@ services:
         tags:
             - { name: form.type, alias: orangegate_page_selector }
 
+    orangegate.page.form.type.site_selector:
+        class: Symbio\OrangeGate\PageBundle\Form\Type\SiteSelectorType
+        arguments: [ @orangegate.site.pool ]
+        scope: prototype
+        tags:
+            - { name: form.type, alias: orangegate_site_selector }
+
     orangegate.site.pool:
         class: Symbio\OrangeGate\PageBundle\Entity\SitePool
-        arguments: [ @sonata.page.manager.site, @session ]
+        arguments: [ @sonata.page.manager.site, @session, @security.authorization_checker, @sonata.page.admin.site ]
+        scope: prototype
 
     orangegate.page.kernel.exception_listener:
         class: Symbio\OrangeGate\PageBundle\Listener\ExceptionListener
@@ -75,3 +97,10 @@ services:
         arguments: [ @orangegate.page.repository.redirect ]
         tags:
             - { name: kernel.event_listener, event: kernel.request, priority: 64 }
+
+    orangegate.page.late_request_listener:
+        class: Symbio\OrangeGate\PageBundle\Listener\LateRequestListener
+        arguments: [ @gedmo.listener.translatable, @orangegate.site.pool, @security.token_storage ]
+        scope: prototype
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }

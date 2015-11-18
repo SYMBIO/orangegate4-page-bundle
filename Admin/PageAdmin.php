@@ -14,7 +14,7 @@ namespace Symbio\OrangeGate\PageBundle\Admin;
 use Symbio\OrangeGate\AdminBundle\Admin\Admin as BaseAdmin;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symbio\OrangeGate\PageBundle\Entity\SitePool;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -24,7 +24,6 @@ use Sonata\PageBundle\Exception\PageNotFoundException;
 use Sonata\PageBundle\Exception\InternalErrorException;
 use Sonata\PageBundle\Model\PageInterface;
 use Sonata\PageBundle\Model\PageManagerInterface;
-use Sonata\PageBundle\Model\SiteManagerInterface;
 
 use Sonata\Cache\CacheManagerInterface;
 
@@ -43,9 +42,9 @@ class PageAdmin extends BaseAdmin
     protected $pageManager;
 
     /**
-     * @var SiteManagerInterface
+     * @var SitePool
      */
-    protected $siteManager;
+    protected $sitePool;
 
     /**
      * @var CacheManagerInterface
@@ -172,13 +171,6 @@ class PageAdmin extends BaseAdmin
                     ))
                 ->end()
             ;
-        }
-
-		if ($this->hasSubject() && !$this->getSubject()->getId()) {
-				$formMapper
-                ->with($this->trans('form_page.group_settings_label'))
-                    ->add('site', null, array('required' => true, 'read_only' => true))
-                ->end();
         }
 
         $formMapper
@@ -389,26 +381,7 @@ class PageAdmin extends BaseAdmin
             return false;
         }
 
-        $siteId = null;
-
-        if ($this->getRequest()->getMethod() == 'POST') {
-            $values = $this->getRequest()->get($this->getUniqid());
-            $siteId = isset($values['site']) ? $values['site'] : null;
-        }
-
-        $siteId = (null !== $siteId) ? $siteId : $this->getRequest()->get('siteId');
-
-        if ($siteId) {
-            $site = $this->siteManager->findOneBy(array('id' => $siteId));
-
-            if (!$site) {
-                throw new \RuntimeException('Unable to find the site with id=' . $this->getRequest()->get('siteId'));
-            }
-
-            return $site;
-        }
-
-        return false;
+        return $this->sitePool->getCurrentSite($this->getRequest());
     }
 
     /**
@@ -427,11 +400,11 @@ class PageAdmin extends BaseAdmin
     }
 
     /**
-     * @param \Sonata\PageBundle\Model\SiteManagerInterface $siteManager
+     * @param SitePool $sitePool
      */
-    public function setSiteManager(SiteManagerInterface $siteManager)
+    public function setSitePool(SitePool $sitePool)
     {
-        $this->siteManager = $siteManager;
+        $this->sitePool = $sitePool;
     }
 
     /**
@@ -439,7 +412,7 @@ class PageAdmin extends BaseAdmin
      */
     public function getSites()
     {
-        return $this->siteManager->findBy(array());
+        return $this->sitePool->getSites();
     }
 
     /**
