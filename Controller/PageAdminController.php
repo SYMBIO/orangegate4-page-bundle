@@ -181,6 +181,7 @@ class PageAdminController extends Controller
             'pages' => $pages,
             'form' => $formView,
             'csrf_token' => $this->getCsrfToken('sonata.batch'),
+            'siteAdmin' => $this->get('sonata.page.admin.site'),
         ));
     }
 

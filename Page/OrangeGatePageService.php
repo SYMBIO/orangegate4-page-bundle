@@ -60,10 +60,6 @@ class OrangeGatePageService extends BasePageService
      */
     protected function updateSeoPage(PageInterface $page, $locale)
     {
-        if (!$this->seoPage) {
-            return;
-        }
-
         if (!$page->getParent()) {
             $title = $page->getSite()->getLanguageVersion($locale)->getTitle();
         } else {

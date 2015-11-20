@@ -44,7 +44,7 @@ class RequestListener extends \Sonata\PageBundle\Listener\RequestListener
             }
         }
 
-        if ($site->getLocale() && $site->getLocale() != $request->get('_locale')) {
+        if ($site->getLocale() && $site->getLocale() != $request->getLocale()) {
             throw new PageNotFoundException(sprintf('Invalid locale - site.locale=%s - request._locale=%s', $site->getLocale(), $request->get('_locale')));
         }
 

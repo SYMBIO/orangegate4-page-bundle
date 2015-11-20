@@ -88,7 +88,7 @@ services:
 
     sonata.page.request_listener:
         class: %sonata.page.request_listener.class%
-        arguments: [ @sonata.page.cms_manager_selector, @sonata.page.site.selector, @sonata.page.decorator_strategy, @orangegate.page.repository.redirect ]
+        arguments: [ @sonata.page.cms_manager_selector, @sonata.page.site.selector, @sonata.page.decorator_strategy ]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onCoreRequest, priority: 30 }
 

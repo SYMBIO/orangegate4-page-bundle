@@ -1,13 +1,18 @@
 {% extends 'SymbioOrangeGateAdminBundle:CRUD:base_list.html.twig' %}
 
 {% block actions %}
-    {% spaceless %}
+    <div class="btn-group">{% spaceless %}
         {% if currentSite and admin.hasRoute('create') and admin.isGranted('CREATE')%}
             <a class="btn btn-success sonata-action-element" href="{{ admin.generateUrl('create', { siteId: currentSite.id }) }}">
                 <i class="fa fa-plus"></i>&nbsp;
                 {{ 'link_action_create'|trans({}, 'SymbioOrangeGatePageBundle') }}</a>
         {% endif %}
-    {% endspaceless %}
+        {% if admin.child('sonata.page.admin.snapshot').isGranted('CREATE') %}
+            <a class="btn btn-default sonata-action-element" href="{{ siteAdmin.generateObjectUrl('snapshots', currentSite, {direct: 1}) }}">
+                <i class="fa fa-cloud-upload "></i>
+                {{ 'link_action_publish_web'|trans({}, 'SymbioOrangeGatePageBundle') }}</a>
+        {% endif %}
+    {% endspaceless %}</div>
 {% endblock %}
 
 {% import _self as tree %}

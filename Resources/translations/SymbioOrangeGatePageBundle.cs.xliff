@@ -54,6 +54,10 @@
         <source>link_action_create</source>
         <target>Přidat stránku</target>
       </trans-unit>
+      <trans-unit id="link_action_publish_web">
+        <source>link_action_publish_web</source>
+        <target>Publikovat web</target>
+      </trans-unit>
       <trans-unit id="message_delete_page_is_referenced_by_block">
         <source>message_delete_page_is_referenced_by_block</source>
         <target>Stránka je odkazovaná z těchto bloků</target>

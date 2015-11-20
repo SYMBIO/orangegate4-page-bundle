@@ -39,7 +39,9 @@ class SiteAdminController extends Controller
 
         $this->admin->setSubject($object);
 
-        if ($this->get('request')->getMethod() == "POST") {
+        $request = $this->get('request');
+
+        if ($request->getMethod() === "POST") {
             $this->get('sonata.notification.backend')
                 ->createAndPublish('sonata.page.create_snapshots', array(
                     'siteId' => $object->getId(),
@@ -49,6 +51,18 @@ class SiteAdminController extends Controller
             $this->addFlash('sonata_flash_success', $this->admin->trans('flash_snapshots_created_success'));
 
             return new RedirectResponse($this->admin->generateUrl('edit', array('id' => $object->getId())));
+        }
+
+        if ($request->getMethod() === "GET" && $request->query->get('direct', false)) {
+            $this->get('sonata.notification.backend')
+                ->createAndPublish('sonata.page.create_snapshots', array(
+                    'siteId' => $object->getId(),
+                    'mode'   => 'async'
+                ));
+
+            $this->addFlash('sonata_flash_success', $this->admin->trans('flash_snapshots_created_success'));
+
+            return new RedirectResponse($request->headers->get('referer'));
         }
 
         return $this->render('SonataPageBundle:SiteAdmin:create_snapshots.html.twig', array(

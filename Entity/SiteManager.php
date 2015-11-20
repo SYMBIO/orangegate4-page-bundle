@@ -19,18 +19,25 @@ class SiteManager extends BaseSiteManager
         // remove trailing www. cause we automatically add it to test
         $host = preg_replace('/^www[.]/', '', $host);
 
-        return $this->getEntityManager()->createQuery('
-                SELECT s, lv
+        $result = $this->getEntityManager()->createQuery('
+                SELECT s, lv, IF(lv.host = \'localhost\', 1, 0) as t
                 FROM SymbioOrangeGatePageBundle:Site s
                 INNER JOIN s.languageVersions lv
                 WHERE
                   lv.host in (:wwwhost, :host, \'localhost\')
                   AND lv.enabled = 1
                   AND s.enabled = 1
-                ORDER BY lv.isDefault ASC
+                ORDER BY t,lv.isDefault ASC
             ')
             ->setParameter('host', $host)
             ->setParameter('wwwhost', 'www.'.$host)
             ->execute();
+
+        $sites = array();
+        foreach ($result as $r) {
+            $sites[] = $r[0];
+        }
+
+        return $sites;
     }
 }

@@ -468,7 +468,7 @@
       </trans-unit>
       <trans-unit id="117" resname="message_create_snapshots">
           <source>message_create_snapshots</source>
-          <target>Stniskněte tlačítko Publikovat pro publikaci stránek %site%</target>
+          <target>Stiskněte tlačítko Publikovat pro publikaci stránek %site%</target>
       </trans-unit>
       <trans-unit id="118" resname="button_create_snapshots">
           <source>button_create_snapshots</source>
