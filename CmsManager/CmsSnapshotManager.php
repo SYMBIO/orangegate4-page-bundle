@@ -108,14 +108,6 @@ class CmsSnapshotManager extends BaseCmsPageManager
             $id = null;
         }
 
-        if ($site) {
-            $site_id = $site->getId();
-            $locale = $site->getLocale();
-        } else {
-            $site_id = null;
-            $locale = null;
-        }
-
         if (null === $id || !$site || ($site && !isset($this->pages[$site->getId()][$id]))) {
             if ($fieldName === 'url') {
                 $snapshot = $this->snapshotManager->findOneByUrl($site, $value);
@@ -123,7 +115,7 @@ class CmsSnapshotManager extends BaseCmsPageManager
                 $parameters = array($fieldName => $value);
 
                 if ($site) {
-                    $parameters['site'] = $site->getId();
+                    $parameters['site'] = $site;
                 }
 
                 $snapshot = $this->snapshotManager->findEnableSnapshot($parameters);
@@ -162,7 +154,10 @@ class CmsSnapshotManager extends BaseCmsPageManager
      */
     private function loadBlocks(PageInterface $page)
     {
-        $i = new \RecursiveIteratorIterator(new RecursiveBlockIterator($page->getBlocks()), \RecursiveIteratorIterator::SELF_FIRST);
+        $i = new \RecursiveIteratorIterator(
+            new RecursiveBlockIterator($page->getBlocks()),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
 
         foreach ($i as $block) {
             $this->blocks[$block->getId()] = $block;
