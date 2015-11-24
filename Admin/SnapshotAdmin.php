@@ -100,6 +100,15 @@ class SnapshotAdmin extends Admin
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function create($object)
+    {
+        $object->setEnabled(true);
+        return parent::create($object);
+    }
+
+    /**
      * @param \Sonata\Cache\CacheManagerInterface $cacheManager
      */
     public function setCacheManager(CacheManagerInterface $cacheManager)

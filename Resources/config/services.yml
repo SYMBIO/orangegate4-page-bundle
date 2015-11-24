@@ -92,15 +92,15 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onCoreRequest, priority: 30 }
 
+    orangegate.page.doctrine_locale_listener:
+        class: Symbio\OrangeGate\PageBundle\Listener\DoctrineLocaleListener
+        arguments: [ @gedmo.listener.translatable, @sonata.page.site.selector ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: 31 }
+
     orangegate.page.redirect_listener:
         class: Symbio\OrangeGate\PageBundle\Listener\RedirectListener
         arguments: [ @orangegate.page.repository.redirect ]
         tags:
             - { name: kernel.event_listener, event: kernel.request, priority: 64 }
 
-    orangegate.page.late_request_listener:
-        class: Symbio\OrangeGate\PageBundle\Listener\LateRequestListener
-        arguments: [ @gedmo.listener.translatable, @orangegate.site.pool, @security.token_storage ]
-        scope: prototype
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }

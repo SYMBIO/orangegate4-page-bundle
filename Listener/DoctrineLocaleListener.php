@@ -10,11 +10,12 @@ namespace Symbio\OrangeGate\PageBundle\Listener;
 
 
 use Gedmo\Translatable\TranslatableListener;
+use Sonata\PageBundle\Site\SiteSelectorInterface;
 use Symbio\OrangeGate\PageBundle\Entity\SitePool;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class LateRequestListener
+class DoctrineLocaleListener
 {
     /**
      * @var TranslatableListener
@@ -22,9 +23,9 @@ class LateRequestListener
     protected $translatableListener;
 
     /**
-     * @var SitePool
+     * @var SiteSelectorInterface
      */
-    protected $sitePool;
+    protected $siteSelector;
 
     /**
      * @var TokenStorageInterface
@@ -36,20 +37,17 @@ class LateRequestListener
      * @param TranslatableListener $translatableListener
      * @param SitePool $sitePool
      */
-    public function __construct(TranslatableListener $translatableListener, SitePool $sitePool, TokenStorageInterface $tokenStorage)
+    public function __construct(TranslatableListener $translatableListener, SiteSelectorInterface $siteSelector)
     {
         $this->translatableListener = $translatableListener;
-        $this->sitePool = $sitePool;
-        $this->tokenStorage = $tokenStorage;
+        $this->siteSelector = $siteSelector;
     }
 
     public function onLateKernelRequest(GetResponseEvent $event)
     {
-        if ($this->tokenStorage->getToken() && $this->tokenStorage->getToken()->getUser()) {
-            $site = $this->sitePool->getCurrentSite($event->getRequest());
-            if ($site) {
-                $this->translatableListener->setTranslatableLocale($site->getLocale());
-            }
+        $site = $this->siteSelector->retrieve();
+        if ($site) {
+            $this->translatableListener->setTranslatableLocale($site->getLocale());
         }
     }
 }
