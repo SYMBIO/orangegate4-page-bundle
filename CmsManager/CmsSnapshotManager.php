@@ -48,7 +48,7 @@ class CmsSnapshotManager extends BaseCmsPageManager
         } elseif (is_string($page)) { // page is a slug, load the related page
             $page = $this->getPageByRouteName($site, $page);
         } elseif (is_numeric($page)) {
-            $page = $this->getPageById($page);
+            $page = $this->getPageBy($site, 'id', $page);
         } elseif (!$page) { // get the current page
             $page = $this->getCurrentPage();
         }
