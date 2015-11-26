@@ -2,6 +2,7 @@
 
 namespace Symbio\OrangeGate\PageBundle\Page;
 
+use Symbio\OrangeGate\PageBundle\Entity\LanguageVersion;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -60,13 +61,19 @@ class OrangeGatePageService extends BasePageService
      */
     protected function updateSeoPage(PageInterface $page, $locale)
     {
+        /**
+         * @var LanguageVersion $languageVersion
+         */
+        $languageVersion = $page->getSite()->getLanguageVersion($locale);
+        $siteTitle = $languageVersion->getTitle() ?: $page->getSite()->getName();
+
         if (!$page->getParent()) {
-            $title = $page->getSite()->getLanguageVersion($locale)->getTitle();
+            $title = $siteTitle;
         } else {
             if ($page->getTitle()) {
-                $title = $this->seoPage->getTitle().' - '.$page->getTitle();
+                $title = $page->getTitle().' - '.$siteTitle;
             } elseif ($page->getName()) {
-                $title = $this->seoPage->getTitle().' - '.$page->getName();
+                $title = $page->getName().' - '.$siteTitle;
             }
         }
         $this->seoPage->setTitle($title);
@@ -75,19 +82,19 @@ class OrangeGatePageService extends BasePageService
         if ($page->getMetaDescription()) {
             $this->seoPage->addMeta('name', 'description', $page->getMetaDescription());
             $this->seoPage->addMeta('property', 'og:description', $page->getMetaDescription());
-        } elseif ($page->getSite()->getLanguageVersion($locale)->getMetaDescription()) {
-            $this->seoPage->addMeta('name', 'description', $page->getSite()->getLanguageVersion($locale)->getMetaDescription());
-            $this->seoPage->addMeta('property', 'og:description', $page->getSite()->getLanguageVersion($locale)->getMetaDescription());
+        } elseif ($languageVersion->getMetaDescription()) {
+            $this->seoPage->addMeta('name', 'description', $languageVersion->getMetaDescription());
+            $this->seoPage->addMeta('property', 'og:description', $languageVersion->getMetaDescription());
         }
 
         if ($page->getMetaKeyword()) {
             $this->seoPage->addMeta('name', 'keywords', $page->getMetaKeyword());
-        } elseif ($page->getSite()->getLanguageVersion($locale)->getMetaKeywords()) {
-            $this->seoPage->addMeta('name', 'keywords', $page->getSite()->getLanguageVersion($locale)->getMetaKeywords());
+        } elseif ($languageVersion->getMetaKeywords()) {
+            $this->seoPage->addMeta('name', 'keywords', $languageVersion->getMetaKeywords());
         }
 
-        $this->seoPage->addMeta('property', 'og:site_name', $page->getSite()->getLanguageVersion($locale)->getTitle());
-        $this->seoPage->addMeta('property', 'og:url', 'http://'.$page->getSite()->getLanguageVersion($locale)->getHost());
+        $this->seoPage->addMeta('property', 'og:site_name', $languageVersion->getTitle());
+        $this->seoPage->addMeta('property', 'og:url', 'http://'.$languageVersion->getHost().$languageVersion->getRelativePath());
         $this->seoPage->addMeta('property', 'og:type', 'website');
         $this->seoPage->addHtmlAttributes('prefix', 'og: http://ogp.me/ns#');
     }

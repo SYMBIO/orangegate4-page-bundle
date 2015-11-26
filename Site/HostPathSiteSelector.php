@@ -42,6 +42,7 @@ class HostPathSiteSelector extends ParentSiteSelector
                 $site->setMetaKeywords($lv->getMetaKeywords());
                 $this->site = $site;
                 $request->setLocale($lv->getLocale());
+                $request->attributes->set('_locale', $lv->getLocale());
                 return $results[2];
             }
         }

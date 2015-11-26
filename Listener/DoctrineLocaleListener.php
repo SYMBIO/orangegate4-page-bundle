@@ -48,6 +48,7 @@ class DoctrineLocaleListener
         $site = $this->siteSelector->retrieve();
         if ($site) {
             $this->translatableListener->setTranslatableLocale($site->getLocale());
+            $this->translatableListener->setFallbackLocales($site->getLocales());
         }
     }
 }

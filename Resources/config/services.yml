@@ -96,7 +96,7 @@ services:
         class: Symbio\OrangeGate\PageBundle\Listener\DoctrineLocaleListener
         arguments: [ @gedmo.listener.translatable, @sonata.page.site.selector ]
         tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: 31 }
+            - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: 40 }
 
     orangegate.page.redirect_listener:
         class: Symbio\OrangeGate\PageBundle\Listener\RedirectListener

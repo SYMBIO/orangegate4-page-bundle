@@ -20,13 +20,12 @@ class SnapshotManager extends ParentManager implements SnapshotManagerInterface
     {
         $date = new \Datetime;
         $parameters = array(
-            'publicationDateStart' => $date,
-            'publicationDateEnd'   => $date,
+            'now' => $date,
         );
 
         $query = $this->getRepository()
             ->createQueryBuilder('s')
-            ->andWhere('s.publicationDateStart <= :publicationDateStart AND ( s.publicationDateEnd IS NULL OR s.publicationDateEnd >= :publicationDateEnd )');
+            ->andWhere('s.publicationDateStart <= :now AND ( s.publicationDateEnd IS NULL OR s.publicationDateEnd >= :now )');
 
         $query->andWhere('s.site = :site');
         $parameters['site'] = $site;
@@ -36,9 +35,9 @@ class SnapshotManager extends ParentManager implements SnapshotManagerInterface
 
         $query->setMaxResults(1);
         $query->setParameters($parameters);
-
         $query = $query->getQuery();
 
+        $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_INNER_JOIN, true);
         $query->setHint(
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
             'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
