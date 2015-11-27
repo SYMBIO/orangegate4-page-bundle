@@ -216,4 +216,47 @@ class Transformer extends BaseTransformer
 
         return $page;
     }
+
+
+    /**
+     * @param array         $content
+     * @param PageInterface $page
+     *
+     * @return BlockInterface
+     */
+    public function loadBlock(array $content, PageInterface $page)
+    {
+        $block = $this->blockManager->create();
+
+        $content = $this->fixBlockContent($content);
+
+        $block->setPage($page);
+        $block->setId($content['id']);
+        $block->setName($content['name']);
+        $block->setEnabled($content['enabled']);
+        $block->setPosition($content['position']);
+        $block->setSettings($content['settings']);
+        $block->setType($content['type']);
+
+        $createdAt = new \DateTime();
+        $createdAt->setTimestamp($content['created_at']);
+        $block->setCreatedAt($createdAt);
+
+        $updatedAt = new \DateTime();
+        $updatedAt->setTimestamp($content['updated_at']);
+        $block->setUpdatedAt($updatedAt);
+
+        $t = new BlockTranslation();
+        $t->setObject($block);
+        $t->setLocale($page->getSite()->getLocale());
+        $t->setEnabled($content['enabled']);
+        $t->setSettings($content['settings']);
+        $block->addTranslation($t);
+
+        foreach ($content['blocks'] as $child) {
+            $block->addChildren($this->loadBlock($child, $page));
+        }
+
+        return $block;
+    }
 }
