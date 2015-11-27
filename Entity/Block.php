@@ -248,6 +248,15 @@ class Block extends BaseBlock
         $this->translations->removeElement($translations);
     }
 
+    public function getTranslation($locale)
+    {
+        if (isset($this->translations[$locale])) {
+            return $this->translations[$locale];
+        }
+
+        return null;
+    }
+
     /**
      * Get translations
      *
