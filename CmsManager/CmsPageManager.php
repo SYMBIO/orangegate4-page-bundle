@@ -100,7 +100,6 @@ class CmsPageManager extends BaseCmsPageManager
 
         // first level blocks are containers
         if (!$container && $page->getBlocks()) {
-            $page->getBlocks()->first();
             foreach ($page->getBlocks() as $block) {
                 if ($block->getSetting('code') == $code) {
                     $container = $block;
@@ -110,7 +109,6 @@ class CmsPageManager extends BaseCmsPageManager
         }
 
         if (!$container) {
-            $page->getBlocks()->first();
             $container = $this->blockInteractor->createNewContainer(array(
                 'enabled'  => true,
                 'page'     => $page,
@@ -150,9 +148,15 @@ class CmsPageManager extends BaseCmsPageManager
             throw new PageNotFoundException(sprintf('Unable to find the page : %s = %s', $fieldName, $value));
         }
 
-        $this->loadBlocks($page);
+        if ($page) {
+            $this->loadBlocks($page);
 
-        $this->pageReferences[$site->getId()][$fieldName][$value] = $page;
+            $id = $page->getId();
+
+            if ($fieldName != 'id') {
+                $this->pageReferences[$site->getId()][$fieldName][$value] = $id;
+            }
+        }
 
         return $page;
     }
