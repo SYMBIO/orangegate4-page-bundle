@@ -150,7 +150,9 @@ class CmsPageManager extends BaseCmsPageManager
             throw new PageNotFoundException(sprintf('Unable to find the page : %s = %s', $fieldName, $value));
         }
 
-        $this->pageReferences[$fieldName][$value] = $page;
+        $this->loadBlocks($page);
+
+        $this->pageReferences[$site->getId()][$fieldName][$value] = $page;
 
         return $page;
     }

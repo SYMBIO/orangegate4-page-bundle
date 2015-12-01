@@ -2,7 +2,10 @@
 
 namespace Symbio\OrangeGate\PageBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Proxy\Proxy;
+use Sonata\BlockBundle\Model\BlockInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Sonata\PageBundle\Model\PageBlockInterface;
 use Sonata\PageBundle\Model\PageInterface;
@@ -539,28 +542,29 @@ class Page implements PageInterface
     }
 
     /**
-     * Add blocks
+     * Add block
      *
-     * @param \Symbio\OrangeGate\PageBundle\Entity\Block $blocks
+     * @param \Symbio\OrangeGate\PageBundle\Entity\Block $block
      * @return Page
      */
-    public function addBlock(PageBlockInterface $blocks)
+    public function addBlock(PageBlockInterface $block)
     {
-        $this->blocks[] = $blocks;
+        $block->setPage($this);
+        $this->blocks[] = $block;
 
         return $this;
     }
 
     /**
-     * Add blocs
+     * Add blocks
      *
-     * @param PageBlockInterface $blocs
+     * @param Collection $blocks
      */
-    public function addBlocks(PageBlockInterface $blocs)
+    public function addBlocks(PageBlockInterface $blocks)
     {
-        $blocs->setPage($this);
+        $this->addBlock($blocks);
 
-        $this->blocks[] = $blocs;
+        return $this;
     }
 
     /**
@@ -581,6 +585,18 @@ class Page implements PageInterface
     public function getBlocks()
     {
         return $this->blocks;
+    }
+
+    /**
+     * Set blocks
+     *
+     * @param Collection $blocks
+     * @return Page
+     */
+    public function setBlocks($blocks)
+    {
+        $this->blocks = $blocks;
+        return $this;
     }
 
     /**
@@ -1190,14 +1206,14 @@ class Page implements PageInterface
 
     public function disableBlockLazyLoading()
     {
-        if (is_object($this->blocks)) {
+        if ($this->blocks instanceof Proxy) {
             $this->blocks->setInitialized(true);
         }
     }
 
     public function disableChildrenLazyLoading()
     {
-        if (is_object($this->children)) {
+        if ($this->children instanceof Proxy) {
             $this->children->setInitialized(true);
         }
     }

@@ -83,18 +83,10 @@ class PageManager extends BasePageManager implements PageManagerInterface
             'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
         );
 
-        if (count($site->getLanguageVersions()) > 0) {
-            $query->setHint(
-                \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
-                $site->getDefaultLocale()
-            );
-        } else {
-            // this is only due to backward compatibility, language version should always exist
-            $query->setHint(
-                \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
-                $site->getLocale()
-            );
-        }
+        $query->setHint(
+            \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
+            $site->getLocale()
+        );
 
         $pages = $query->execute();
 
@@ -107,7 +99,7 @@ class PageManager extends BasePageManager implements PageManagerInterface
             }
 
             $pages[$parent->getId()]->disableChildrenLazyLoading();
-            $pages[$parent->getId()]->addChildren($page);
+            //$pages[$parent->getId()]->addChildren($page);
         }
 
         return $pages;
@@ -132,26 +124,24 @@ class PageManager extends BasePageManager implements PageManagerInterface
 
     public function findOneById($site, $id)
     {
-        // if pages are not loaded, first get page by id and then load pages of the same site
-        if (!$this->pages) {
-            $page = $this->findOneBy(array('id' => $id));
-
-            if ($page) {
-                $this->loadPages($page->getSite());
+        if ($site instanceof SiteInterface) {
+            if (!isset($this->pages[$site->getId()])) {
+                $this->pages[$site->getId()] = $this->loadPages($site);
             }
-
-            return $page;
-        }
-
-        foreach ($this->pages as $site_id => $pages) {
-            foreach ($pages as $page) {
+            foreach ($this->pages[$site->getId()] as $page) {
                 if ($page->getId() === (int)$id) {
                     return $page;
                 }
             }
-        }
+        } else {
+            $page = $this->findOneBy(array('id' => $id));
 
-        return null;
+            if ($page && !isset($this->pages[$page->getSite()->getId()])) {
+                $this->pages[$page->getSite()->getId()] = $this->loadPages($page->getSite());
+            }
+
+            return $page;
+        }
     }
 
     /**

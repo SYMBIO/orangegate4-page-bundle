@@ -2,6 +2,7 @@
 
 namespace Symbio\OrangeGate\PageBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 use Sonata\BlockBundle\Model\BlockManagerInterface;
@@ -71,6 +72,8 @@ class BlockInteractor implements BlockInteractorInterface
         );
 
         $blocks = $query->execute();
+
+        $page->setBlocks(new ArrayCollection($blocks));
 
         return $blocks;
     }

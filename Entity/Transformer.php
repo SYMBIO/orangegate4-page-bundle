@@ -259,4 +259,57 @@ class Transformer extends BaseTransformer
 
         return $block;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getChildren(PageInterface $parent)
+    {
+        if (!isset($this->children[$parent->getId()])) {
+            $date       = new \Datetime();
+            $parameters = array(
+                'publicationDateStart' => $date,
+                'publicationDateEnd'   => $date,
+                'parentId'             => $parent->getId(),
+            );
+
+            $manager = $this->registry->getManagerForClass($this->snapshotManager->getClass());
+
+            if (!$manager instanceof EntityManagerInterface) {
+                throw new \RuntimeException('Invalid entity manager type');
+            }
+
+            $snapshots_query = $manager->createQueryBuilder()
+                ->select('s')
+                ->from($this->snapshotManager->getClass(), 's')
+                ->where('s.parentId = :parentId and s.enabled = 1')
+                ->andWhere('s.publicationDateStart <= :publicationDateStart AND ( s.publicationDateEnd IS NULL OR s.publicationDateEnd >= :publicationDateEnd )')
+                ->orderBy('s.position')
+                ->setParameters($parameters)
+                ->getQuery();
+
+
+            $snapshots_query->setHint(
+                \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+                'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+            );
+            $snapshots_query->setHint(
+                \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
+                $parent->getSite()->getLocale()
+            );
+
+            $snapshots = $snapshots_query->execute();
+
+            $pages = array();
+
+            foreach ($snapshots as $snapshot) {
+                $page                  = new SnapshotPageProxy($this->snapshotManager, $this, $snapshot);
+                $pages[$page->getId()] = $page;
+            }
+
+            $this->children[$parent->getId()] = new \Doctrine\Common\Collections\ArrayCollection($pages);
+        }
+
+        return $this->children[$parent->getId()];
+    }
 }
