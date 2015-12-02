@@ -93,6 +93,32 @@ class BlockAdmin extends BaseAdmin
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function create($object)
+    {
+        $this->prePersist($object);
+        foreach ($this->extensions as $extension) {
+            $extension->prePersist($this, $object);
+        }
+
+        $result = $this->getModelManager()->create($object);
+        // BC compatibility
+        if (null !== $result) {
+            $object = $result;
+        }
+
+        $this->postPersist($object);
+        foreach ($this->extensions as $extension) {
+            $extension->postPersist($this, $object);
+        }
+
+        $this->createObjectSecurity($object);
+
+        return $object;
+    }
+
     public function getNewInstance()
     {
         $object = parent::getNewInstance();
