@@ -95,7 +95,7 @@
 
                                     {% if page is defined %}
                                         <li>
-                                            <a href="{{ url('admin_sonata_page_page_compose', {'id': page.id}) }}">
+                                            <a href="{{ path('admin_sonata_page_page_compose', {'id': page.id}) }}">
                                                 <i class="fa fa-magic"></i>
                                                 {{ 'header.compose_page'|trans({}, 'SonataPageBundle')}}
                                             </a>
@@ -117,7 +117,7 @@
                                 {% endif %}
 
                                 {% if app.security and app.security.token and is_granted('ROLE_PREVIOUS_ADMIN') %}
-                                    <li><a href="{{ url('homepage', {'_switch_user': '_exit'}) }}">{{ "header.switch_user_exit"|trans({}, 'SonataPageBundle')}}</a></li>
+                                    <li><a href="{{ path('homepage', {'_switch_user': '_exit'}) }}">{{ "header.switch_user_exit"|trans({}, 'SonataPageBundle')}}</a></li>
                                 {% endif %}
 
                             </ul>
