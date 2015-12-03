@@ -189,6 +189,19 @@ class PageAdmin extends BaseAdmin
                         'siteId' => $site->getId()
                     )
                 ))
+                ->add('target', 'orangegate_page_selector', array(
+                    'page'          => $this->getSubject() ?: null,
+                    'site'          => $site,
+                    'model_manager' => $this->getModelManager(),
+                    'class'         => $this->getClass(),
+                    'required'      => !$this->isGranted('EDIT'),
+                    //'filter_choice' => array('root' => $this->isGranted('EDIT') ? false : $this->getSubject->getParent()),
+                ), array(
+                    'admin_code' => $this->getCode(),
+                    'link_parameters' => array(
+                        'siteId' => $site->getId()
+                    )
+                ))
                 ->add('icon', 'sonata_type_model_list', array('required' => false), array(
                     'placeholder' => 'No image selected',
                     'link_parameters' => array(

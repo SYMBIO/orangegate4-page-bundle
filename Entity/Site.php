@@ -442,7 +442,7 @@ class Site extends BaseSite
      */
     public function addLanguageVersion(LanguageVersion $languageVersions)
     {
-        $this->languageVersions[] = $languageVersions;
+        $this->languageVersions[$languageVersions->getLocale()] = $languageVersions;
 
         return $this;
     }

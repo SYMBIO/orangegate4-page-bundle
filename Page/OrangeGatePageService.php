@@ -3,6 +3,7 @@
 namespace Symbio\OrangeGate\PageBundle\Page;
 
 use Symbio\OrangeGate\PageBundle\Entity\LanguageVersion;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -43,6 +44,10 @@ class OrangeGatePageService extends BasePageService
      */
     public function execute(PageInterface $page, Request $request, array $parameters = array(), Response $response = null)
     {
+        if ($page->getTarget()) {
+            return new RedirectResponse($page->getTarget()->getUrl());
+        }
+
         $this->updateSeoPage($page, $request->getLocale());
 
         if ($content = $response->getContent()) {
