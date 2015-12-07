@@ -21,6 +21,8 @@ class PageSelectorType extends AbstractType
 
     protected $securityContext;
 
+    protected $isEditor = false;
+
     /**
      * @param PageManagerInterface $manager
      */
@@ -29,6 +31,8 @@ class PageSelectorType extends AbstractType
         $this->manager = $manager;
 
         $this->securityContext = $securityContext;
+
+        $this->isEditor = $this->securityContext->isGranted(array('ROLE_SONATA_PAGE_ADMIN_PAGE_EDITOR','ROLE_SONATA_PAGE_ADMIN_PAGE_ADMIN'));
     }
 
     /**
@@ -65,21 +69,49 @@ class PageSelectorType extends AbstractType
             'root' => false,
         ), $options['filter_choice']);
 
+        $editedPage = $options['page'];
+
         $pages = $this->manager->loadPages($options['site']);
 
         $choices = array();
+        $parents = array();
 
         foreach ($pages as $page) {
-            if (
-                !$page->isInternal() // internal cannot be selected
-                && null === $page->getParent()
-                && $this->securityContext->isGranted('EDIT', $page)
-            ) {
+            if ($page->isInternal()) { // internal pages cannot be selected
+                continue;
+            }
+
+            // user has PageAdmin editor or admin role - render whole tree
+            if ($this->isEditor && null === $page->getParent()) {
                 $this->childWalker($page, null, $choices, 1);
+            }
+            // user has defined ACL rights - render from allowed pages parents
+            elseif ($this->securityContext->isGranted('EDIT', $page)) {
+                // find the top not-granted parent
+                $topNotGrantedParent = $this->getTopNotGrantedParent($page);
+                // check if parent is not walked through
+                if ($topNotGrantedParent && !in_array($topNotGrantedParent->getId(), $parents)) {
+                    $parents[] = $topNotGrantedParent->getId();
+                    $this->childWalker($topNotGrantedParent, null, $choices, 1, ($editedPage->getParent() && $topNotGrantedParent->getId() == $editedPage->getParent()->getId()));
+                }
             }
         }
 
         return $choices;
+    }
+
+    /**
+     * Return top parent which is not granted to edit
+     *
+     * @param PageInterface $page
+     * @return PageInterface $parent
+     */
+    private function getTopNotGrantedParent(PageInterface $page)
+    {
+        while ($page->getParent() && $this->securityContext->isGranted('EDIT', $page->getParent())) {
+            $page = $page->getParent();
+        }
+        return $page->getParent() ?: $page;
     }
 
     /**
@@ -88,15 +120,16 @@ class PageSelectorType extends AbstractType
      * @param array         $choices
      * @param int           $level
      */
-    private function childWalker(PageInterface $page, PageInterface $currentPage = null, &$choices, $level = 1)
+    private function childWalker(PageInterface $page, PageInterface $currentPage = null, &$choices, $level = 1, $addNotGrantedPage = false)
     {
-        if (
-            !($currentPage && $currentPage->getId() == $page->getId())
-        ) {
-            $choices[$page->getId()] = $page->getLongName();
-
+        if (!($currentPage && $currentPage->getId() == $page->getId())) {
+            if ($level > 1 || $this->isEditor || $this->securityContext->isGranted('EDIT', $page) || $addNotGrantedPage) {
+                $choices[$page->getId()] = $page->getLongName();
+            }
             foreach ($page->getChildren() as $child) {
+                if ($this->isEditor || $this->securityContext->isGranted('EDIT', $child)) {
                     $this->childWalker($child, $currentPage, $choices, $level + 1);
+                }
             }
         }
     }
