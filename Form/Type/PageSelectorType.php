@@ -86,7 +86,7 @@ class PageSelectorType extends AbstractType
                 $this->childWalker($page, null, $choices, 1);
             }
             // user has defined ACL rights - render from allowed pages parents
-            elseif ($this->securityContext->isGranted('EDIT', $page)) {
+            elseif (!$this->isEditor && $this->securityContext->isGranted('EDIT', $page)) {
                 // find the top not-granted parent
                 $topNotGrantedParent = $this->getTopNotGrantedParent($page);
                 // check if parent is not walked through
