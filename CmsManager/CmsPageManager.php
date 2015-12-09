@@ -107,7 +107,7 @@ class CmsPageManager extends BaseCmsPageManager
                 }
             }
         }
-
+/* DON'T CREATE CONTAINER OF FRONTEND!
         if (!$container) {
             $container = $this->blockInteractor->createNewContainer(array(
                 'enabled'  => true,
@@ -117,6 +117,7 @@ class CmsPageManager extends BaseCmsPageManager
                 'parent'   => $parentContainer
             ));
         }
+*/
 
         return $container;
     }
