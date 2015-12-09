@@ -32,7 +32,7 @@ class PageSelectorType extends AbstractType
 
         $this->securityContext = $securityContext;
 
-        $this->isEditor = $this->securityContext->isGranted(array('ROLE_SONATA_PAGE_ADMIN_PAGE_EDITOR','ROLE_SONATA_PAGE_ADMIN_PAGE_ADMIN'));
+        $this->isEditor = $this->securityContext->isGranted(array('ROLE_SUPER_ADMIN','ROLE_SONATA_PAGE_ADMIN_PAGE_EDITOR','ROLE_SONATA_PAGE_ADMIN_PAGE_ADMIN'));
     }
 
     /**
