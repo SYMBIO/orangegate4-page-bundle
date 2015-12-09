@@ -182,7 +182,7 @@ class PageAdmin extends BaseAdmin
                     'model_manager' => $this->getModelManager(),
                     'class'         => $this->getClass(),
                     'required'      => !$this->isGranted('EDIT'),
-                    //'filter_choice' => array('root' => $this->isGranted('EDIT') ? false : $this->getSubject->getParent()),
+                    //'filter_choice' => array('root' => $this->isGranted('EDIT') ? false : $this->getSubject()->getParent()),
                 ), array(
                     'admin_code' => $this->getCode(),
                     'link_parameters' => array(
