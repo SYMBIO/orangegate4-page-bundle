@@ -18,7 +18,6 @@ class SiteManager extends BaseSiteManager
     {
         // remove trailing www. cause we automatically add it to test
         $host = preg_replace('/^www[.]/', '', $host);
-        $host = 'ceskavejce.cz';
 
         $result = $this->getEntityManager()->createQuery('
                 SELECT s, lv, IF(lv.host = \'localhost\', 1, 0) as t
