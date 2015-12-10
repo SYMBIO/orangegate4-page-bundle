@@ -22,8 +22,10 @@ class BlockAdminController extends Controller
     public function preEdit(Request $request, $object)
     {
         // set current site to currently edited block's site
-        $request->query->set('site', $object->getSite()->getId());
-        $this->get('orangegate.site.pool')->getCurrentSite($request);
+        if ($object->getSite()) {
+            $request->query->set('site', $object->getSite()->getId());
+            $this->get('orangegate.site.pool')->getCurrentSite($request);
+        }
 
         parent::preEdit($request, $object);
     }
