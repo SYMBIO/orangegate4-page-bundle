@@ -39,6 +39,9 @@ class SiteAdminController extends Controller
 
         $this->admin->setSubject($object);
 
+        $translatableListener = $this->get('gedmo.listener.translatable');
+        $translatableListener->setTranslatableLocale($object->getLocale());
+
         $request = $this->get('request');
 
         if ($request->getMethod() === "POST") {

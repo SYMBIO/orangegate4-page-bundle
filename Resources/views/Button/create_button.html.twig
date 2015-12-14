@@ -1,4 +1,4 @@
-{% if (admin.hasRoute('create') and admin.isGranted('EDIT', admin.subject)) %}
+{% if (admin.hasRoute('create') and admin.isGranted('CREATE', admin.subject)) %}
     <a class="btn btn-success sonata-action-element" href="{{ admin.generateUrl('create', {'parentId': admin.subject.id}) }}">
         <i class="fa fa-plus"></i>&nbsp;
         {{ 'link_action_create_subpage'|trans({}, 'SymbioOrangeGatePageBundle') }}</a>

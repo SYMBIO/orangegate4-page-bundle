@@ -17,7 +17,7 @@ services:
             class: %sonata.page.admin.block.class%
             tags:
                 - { name: sonata.admin, manager_type: orm, show_in_dashboard: false, group: sonata_page, label_catalogue: %sonata.page.admin.page.translation_domain%, label: block, label_translator_strategy: sonata.admin.label.strategy.underscore }
-            arguments: [ null, %sonata.page.admin.block.entity%, %sonata.page.admin.block.controller%, @kernel ]
+            arguments: [ null, %sonata.page.admin.block.entity%, %sonata.page.admin.block.controller%, @gedmo.listener.translatable ]
             calls:
                 - [ setCacheManager, [@sonata.cache.manager] ]
                 - [ setBlockManager, [@sonata.block.manager] ]
@@ -75,7 +75,7 @@ services:
 
     orangegate.page.kernel.exception_listener:
         class: Symbio\OrangeGate\PageBundle\Listener\ExceptionListener
-        arguments: [@sonata.page.site.selector, @sonata.page.cms_manager_selector, %kernel.debug%, @templating, @sonata.page.page_service_manager, @sonata.page.decorator_strategy, [], @logger, @security.token_storage, @sonata.admin.pool ]
+        arguments: [@sonata.page.site.selector, @sonata.page.cms_manager_selector, %kernel.debug%, @templating, @sonata.page.page_service_manager, @sonata.page.decorator_strategy, {403: _page_internal_error_access_denied, 404: _page_internal_error_not_found, 500: _page_internal_error_fatal}, @logger, @security.token_storage, @sonata.admin.pool ]
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: -126 }
             - { name: monolog.logger, channel: request }

@@ -30,7 +30,7 @@ class CmsSnapshotManager extends BaseCmsPageManager
 
     /**
      * @param SnapshotManagerInterface $snapshotManager
-     * @param TransformerInterface     $transformer
+     * @param TransformerInterface $transformer
      */
     public function __construct(SnapshotManagerInterface $snapshotManager, TransformerInterface $transformer)
     {

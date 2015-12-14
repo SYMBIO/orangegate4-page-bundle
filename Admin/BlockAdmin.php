@@ -3,6 +3,7 @@
 namespace Symbio\OrangeGate\PageBundle\Admin;
 
 use Doctrine\ORM\EntityRepository;
+use Gedmo\Translatable\TranslatableListener;
 use Sonata\PageBundle\Admin\BlockAdmin as BaseAdmin;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\PageBundle\Model\PageInterface;
@@ -13,14 +14,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Admin class for the Block model
- *
- * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
 class BlockAdmin extends BaseAdmin
 {
     protected $parentAssociationMapping = 'page';
 
-    protected $kernel;
+    /**
+     * @var TranslatableListener
+     */
+    protected $translatableListener;
 
     protected $locales = array();
 
@@ -28,11 +30,11 @@ class BlockAdmin extends BaseAdmin
      * @param string $code
      * @param string $class
      * @param string $baseControllerName
-     * @param \AppKernel $kernel
+     * @param TranslatableListener $translatableListener
      */
-    public function __construct($code, $class, $baseControllerName, \AppKernel $kernel)
+    public function __construct($code, $class, $baseControllerName, TranslatableListener $translatableListener)
     {
-        $this->kernel = $kernel;
+        $this->translatableListener = $translatableListener;
 
         parent::__construct($code, $class, $baseControllerName);
     }
@@ -59,6 +61,9 @@ class BlockAdmin extends BaseAdmin
             $service = $this->blockManager->getService($this->request->get('type'));
             $block->setName($service->getName());
         }
+
+        $this->translatableListener->setTranslatableLocale($block->getSite()->getDefaultLocale());
+        $this->translatableListener->setFallbackLocales($block->getSite()->getLocales());
 
         return parent::configureFormFields($formMapper);
     }
@@ -91,6 +96,32 @@ class BlockAdmin extends BaseAdmin
         foreach ($translations as $trans) {
             $trans->setObject($object);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function create($object)
+    {
+        $this->prePersist($object);
+        foreach ($this->extensions as $extension) {
+            $extension->prePersist($this, $object);
+        }
+
+        $result = $this->getModelManager()->create($object);
+        // BC compatibility
+        if (null !== $result) {
+            $object = $result;
+        }
+
+        $this->postPersist($object);
+        foreach ($this->extensions as $extension) {
+            $extension->postPersist($this, $object);
+        }
+
+        $this->createObjectSecurity($object);
+
+        return $object;
     }
 
     public function getNewInstance()

@@ -208,7 +208,7 @@
       </trans-unit>
       <trans-unit id="52" resname="form.label_target">
         <source>form.label_target</source>
-        <target>Cíl</target>
+        <target>Přesměruj tuto stránku na</target>
       </trans-unit>
       <trans-unit id="53" resname="form.label_template_code">
         <source>form.label_template_code</source>

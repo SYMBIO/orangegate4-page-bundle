@@ -51,4 +51,32 @@ class SharedBlockAdmin extends BaseBlockAdmin
 
         return $object;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function preUpdate($object)
+    {
+        parent::preUpdate($object);
+
+        if ($object->getPage()) {
+            $site = $object->getPage()->getSite();
+            $object->setSite($site);
+        }
+
+        $translations = $object->getTranslations();
+
+        foreach ($translations as $trans) {
+            $trans->setObject($object);
+        }
+
+        // because of current locale's translation being overwritten with base object data
+        if (isset($site)) {
+            $locale = $site->getDefaultLocale();
+            if ($locale) {
+                $object->setSettings($translations[$locale]->getSettings());
+                $object->setEnabled($translations[$locale]->getEnabled());
+            }
+        }
+    }
 }

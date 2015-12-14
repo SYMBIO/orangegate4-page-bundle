@@ -23,6 +23,12 @@ class PageAdminController extends Controller
         return new RedirectResponse($this->admin->generateUrl('tree'));
     }
 
+    protected function preEdit(Request $request, $object)
+    {
+        $translatableListener = $this->get('gedmo.listener.translatable');
+        $translatableListener->setTranslatableLocale($object->getSite()->getLocale());
+    }
+
     public function createAction(Request $request = NULL)
     {
         if ($parentId = $request->query->get('parentId')) {
