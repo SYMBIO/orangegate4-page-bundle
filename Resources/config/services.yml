@@ -11,7 +11,7 @@ services:
             - [ setCacheManager, [ @sonata.cache.manager ] ]
             - [ setSitePool, [ @orangegate.site.pool ] ]
             - [ setTranslationDomain, [ %sonata.page.admin.page.translation_domain% ] ]
-            - [ setTemplates, [[ SonataPageBundle:PageAdmin:list.html.twig ]] ]
+            - [ setTemplates, [{ list: SonataPageBundle:PageAdmin:list.html.twig, edit: SymbioOrangeGatePageBundle:PageAdmin:edit.html.twig } ] ]
 
     sonata.page.admin.block:
             class: %sonata.page.admin.block.class%
