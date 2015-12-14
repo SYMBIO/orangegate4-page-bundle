@@ -14,7 +14,7 @@
         {% include 'SymbioOrangeGateAdminBundle:Button:show_button.html.twig' %}
         {% include 'SymbioOrangeGateAdminBundle:Button:history_button.html.twig' %}
         {% if admin.child('sonata.page.admin.snapshot').isGranted('CREATE')%}
-            {% include 'SymbioOrangeGateAdminBundle:Button:publish_button.html.twig' %}
+            {% include 'SymbioOrangeGatePageBundle:Button:publish_button.html.twig' %}
         {% endif %}
         {% include 'SymbioOrangeGateAdminBundle:Button:acl_button.html.twig' %}
     {% endspaceless %}</div>
