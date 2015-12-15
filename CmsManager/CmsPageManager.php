@@ -107,8 +107,9 @@ class CmsPageManager extends BaseCmsPageManager
                 }
             }
         }
-/* DON'T CREATE CONTAINER OF FRONTEND!
-        if (!$container) {
+
+        /* DON'T CREATE CONTAINERS OF CMS PAGES, ONLY INTERNAL */
+        if (!$container && $page->isInternal()) {
             $container = $this->blockInteractor->createNewContainer(array(
                 'enabled'  => true,
                 'page'     => $page,
@@ -117,7 +118,6 @@ class CmsPageManager extends BaseCmsPageManager
                 'parent'   => $parentContainer
             ));
         }
-*/
 
         return $container;
     }
