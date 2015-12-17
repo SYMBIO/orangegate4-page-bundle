@@ -102,7 +102,7 @@ class OrangeGatePageService extends BasePageService
         if (($languageVersion->getHost() && $languageVersion->getHost() != 'localhost') || isset($_SERVER['HTTP_HOST'])) {
             $protocol = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http';
             $host = $languageVersion->getHost() && $languageVersion->getHost() != 'localhost' ? $languageVersion->getHost() : $_SERVER['HTTP_HOST'];
-            $this->seoPage->addMeta('property', 'og:url', $protocol . '://' . $host . $languageVersion->getRelativePath());
+            $this->seoPage->addMeta('property', 'og:url', $protocol . '://' . $host . $languageVersion->getRelativePath() . (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : ''));
         }
 
         $this->seoPage->addMeta('property', 'og:type', 'website');
