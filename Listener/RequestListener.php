@@ -44,11 +44,13 @@ class RequestListener extends \Sonata\PageBundle\Listener\RequestListener
             }
         }
 
-        if ($site->getLocale() && $site->getLocale() != $request->getLocale()) {
-            throw new PageNotFoundException(sprintf('Invalid locale - site.locale=%s - request._locale=%s', $site->getLocale(), $request->get('_locale')));
-        }
+        if ($isRequestDecorable) {
+            if ($site->getLocale() && $site->getLocale() != $request->getLocale()) {
+                throw new PageNotFoundException(sprintf('Invalid locale - site.locale=%s - request._locale=%s - request.locale=%s', $site->getLocale(), $request->get('_locale'), $request->getLocale()));
+            }
 
-        $request->setLocale($site->getLocale());
+            $request->setLocale($site->getLocale());
+        }
 
         // true cms page
         if ($request->get('_route') === PageInterface::PAGE_ROUTE_CMS_NAME) {
