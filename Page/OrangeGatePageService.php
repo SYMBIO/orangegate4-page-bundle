@@ -48,7 +48,7 @@ class OrangeGatePageService extends BasePageService
             return new RedirectResponse($page->getTarget()->getUrl());
         }
 
-        $this->updateSeoPage($page, $request->getLocale());
+        $this->updateSeoPage($page, $request);
 
         if ($content = $response->getContent()) {
             $response = $this->templateManager->renderResponse($page->getTemplateCode(), array_merge($parameters, array('content' => $content)), $response);
@@ -64,12 +64,12 @@ class OrangeGatePageService extends BasePageService
      *
      * @param PageInterface $page
      */
-    protected function updateSeoPage(PageInterface $page, $locale)
+    protected function updateSeoPage(PageInterface $page, Request $request)
     {
         /**
          * @var LanguageVersion $languageVersion
          */
-        $languageVersion = $page->getSite()->getLanguageVersion($locale);
+        $languageVersion = $page->getSite()->getLanguageVersion($request->getLocale());
         $siteTitle = $languageVersion->getTitle() ?: $page->getSite()->getName();
 
         if (!$page->getParent()) {
@@ -99,7 +99,7 @@ class OrangeGatePageService extends BasePageService
         }
 
         $this->seoPage->addMeta('property', 'og:site_name', $languageVersion->getTitle());
-        $this->seoPage->addMeta('property', 'og:url', 'http://'.$languageVersion->getHost().$languageVersion->getRelativePath());
+        $this->seoPage->addMeta('property', 'og:url', $request->getUri());
         $this->seoPage->addMeta('property', 'og:type', 'website');
         $this->seoPage->addHtmlAttributes('prefix', 'og: http://ogp.me/ns#');
     }
