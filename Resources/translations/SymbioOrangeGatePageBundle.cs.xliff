@@ -54,6 +54,10 @@
         <source>link_action_create</source>
         <target>Přidat stránku</target>
       </trans-unit>
+      <trans-unit id="link_action_publish">
+        <source>link_action_publish</source>
+        <target>Publikovat</target>
+      </trans-unit>
       <trans-unit id="link_action_publish_web">
         <source>link_action_publish_web</source>
         <target>Publikovat web</target>
