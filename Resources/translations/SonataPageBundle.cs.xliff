@@ -154,6 +154,7 @@
         <source>form.label_decorate</source>
         <target>Dekorovat</target>
       </trans-unit>
+
       <trans-unit id="39">
         <source>Enabled</source>
         <target>Povoleno</target>
@@ -810,6 +811,10 @@
       <trans-unit id="form.label_note">
         <source>form.label_note</source>
         <target>Poznámka</target>
+      </trans-unit>
+      <trans-unit id="form.label_route_name">
+        <source>form.label_route_name</source>
+        <target>Akce stránky</target>
       </trans-unit>
     </body>
   </file>

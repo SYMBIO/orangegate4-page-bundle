@@ -21,6 +21,61 @@ use Sonata\PageBundle\Route\CmsPageRouter as BaseCmsPageRouter;
 
 class CmsPageRouter extends BaseCmsPageRouter
 {
+
+    /**
+     * {@inheritdoc}
+     */
+    public function match($pathinfo)
+    {
+        $cms = $this->cmsSelector->retrieve();
+        $site = $this->siteSelector->retrieve();
+
+        if (!$cms instanceof CmsManagerInterface) {
+            throw new ResourceNotFoundException('No CmsManager defined');
+        }
+
+        if (!$site instanceof SiteInterface) {
+            throw new ResourceNotFoundException('No site defined');
+        }
+
+        try {
+            $page = $cms->getPageByUrl($site, $pathinfo);
+        } catch (PageNotFoundException $e) {
+            throw new ResourceNotFoundException($pathinfo, 0, $e);
+        }
+
+        if (!$page || (!$page->isCms() && !$page->isHybrid())) {
+            throw new ResourceNotFoundException($pathinfo);
+        }
+
+        if (!$page->getEnabled() && !$this->cmsSelector->isEditor()) {
+            throw new ResourceNotFoundException($pathinfo);
+        }
+
+        $cms->setCurrentPage($page);
+
+        return array(
+            '_controller' => $page->isHybrid() ? $this->getControllerForRouteName($page->getRouteName()) : 'sonata.page.page_service_manager:execute',
+            '_route'      => $page->isHybrid() ? $page->getRouteName() : PageInterface::PAGE_ROUTE_CMS_NAME,
+            'page'        => $page,
+            'path'        => $pathinfo,
+            'params'      => array(),
+        );
+    }
+
+    // agrofert_agrofert_career_list -> CareerController::listAction
+    protected function getControllerForRouteName($routeName)
+    {
+        foreach ($this->router->getRouteCollection() as $name => $route) {
+            if ($name === $routeName) {
+                return $route->getDefaults()['_controller'];
+            }
+        }
+
+        throw new ResourceNotFoundException($routeName);
+    }
+
+
     /**
      * Generates an URL from a Page object
      *
