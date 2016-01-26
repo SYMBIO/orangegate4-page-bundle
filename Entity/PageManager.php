@@ -129,12 +129,11 @@ class PageManager extends BasePageManager implements PageManagerInterface
     {
         $purl = $page->getUrl();
         $pattern = '#^'.$purl.'$#';
-        preg_match_all('/{[a-z]+}/', $pattern, $matches);
+        preg_match_all('/{[a-z]+}/', $purl, $matches);
 
-        if ($tokens = $matches[0]) {
-            foreach ($tokens as $token) {
-                $pattern = preg_replace('/'.$token.'/', '(.+)', $pattern);
-            }
+        $tokens = $matches[0];
+        foreach ($tokens as $token) {
+            $pattern = preg_replace('/'.$token.'/', '(.+)', $pattern);
         }
 
         if (preg_match($pattern, $url, $matches)) {
