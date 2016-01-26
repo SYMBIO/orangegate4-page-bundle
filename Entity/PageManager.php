@@ -29,39 +29,35 @@ class PageManager extends BasePageManager implements PageManagerInterface
             return;
         }
 
-        // hybrid page cannot be altered
-        if (!$page->isHybrid()) {
+        // make sure Page has a valid url
+        if ($page->getParent()) {
+            foreach ($page->getTranslations() as $trans) {
+                $locale = $trans->getLocale();
 
-            // make sure Page has a valid url
-            if ($page->getParent()) {
-                foreach ($page->getTranslations() as $trans) {
-                    $locale = $trans->getLocale();
+                if (!$trans->getSlug()) {
+                    $trans->setSlug(ModelPage::slugify($trans->getName()));
+                }
 
-                    if (!$trans->getSlug()) {
-                        $trans->setSlug(ModelPage::slugify($trans->getName()));
+                $parent = $page->getParent();
+                $ptrans = $parent->getTranslation($locale);
+
+                if ($ptrans) {
+                    $url = $ptrans->getUrl();
+                    if ($url == '/') {
+                        $base = '/';
+                    } elseif (substr($url, -1) != '/') {
+                        $base = $url . '/';
+                    } else {
+                        $base = $url;
                     }
 
-                    $parent = $page->getParent();
-                    foreach ($parent->getTranslations() as $ptrans) {
-                        if ($ptrans->getLocale() === $locale) {
-                            $url = $ptrans->getUrl();
-                            if ($url == '/') {
-                                $base = '/';
-                            } elseif (substr($url, -1) != '/') {
-                                $base = $url . '/';
-                            } else {
-                                $base = $url;
-                            }
-
-                            $trans->setUrl($base . $trans->getSlug());
-                        }
-                    }
+                    $trans->setUrl($base . $trans->getSlug());
                 }
-            } else {
-                foreach ($page->getTranslations() as $trans) {
-                    // a parent page does not have any slug - can have a custom url ...
-                    $trans->setUrl('/' . $trans->getSlug());
-                }
+            }
+        } else {
+            foreach ($page->getTranslations() as $trans) {
+                // a parent page does not have any slug - can have a custom url ...
+                $trans->setUrl('/' . $trans->getSlug());
             }
         }
 

@@ -252,6 +252,7 @@ class PageAdmin extends BaseAdmin
 
         $formMapper
             ->with($this->trans('form_page.group_advanced_label'), array('collapsed' => false))
+                ->add('routeName', null, array('required' => true))
                 ->add('pageAlias', null, array('required' => false))
                 ->add('javascript', null,  array('required' => false))
                 ->add('stylesheet', null, array('required' => false))
@@ -276,8 +277,6 @@ class PageAdmin extends BaseAdmin
         $admin = $this->isChild() ? $this->getParent() : $this;
 
         $id = $admin->getRequest()->get('id');
-
-        $current_route = $admin->getRequest()->get('_route');
 
         $editNode = $menu->addChild(
             $this->trans('sidemenu.link_edit_page'),
@@ -352,6 +351,10 @@ class PageAdmin extends BaseAdmin
     public function getNewInstance()
     {
         $instance = parent::getNewInstance();
+
+        if (!$instance->getRouteName()) {
+            $instance->setRouteName(PageInterface::PAGE_ROUTE_CMS_NAME);
+        }
 
         if (!$this->hasRequest()) {
             return $instance;
