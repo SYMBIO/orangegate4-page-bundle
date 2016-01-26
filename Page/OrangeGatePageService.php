@@ -79,6 +79,8 @@ class OrangeGatePageService extends BasePageService
                 $title = $page->getTitle().' - '.$siteTitle;
             } elseif ($page->getName()) {
                 $title = $page->getName().' - '.$siteTitle;
+            } else {
+                $title = $siteTitle;
             }
         }
         $this->seoPage->setTitle($title);
