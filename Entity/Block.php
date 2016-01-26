@@ -46,7 +46,7 @@ class Block extends BaseBlock
 
     /**
      * @var \Symbio\OrangeGate\PageBundle\Entity\Page
-     * @ORM\ManyToOne(targetEntity="Page")
+     * @ORM\ManyToOne(targetEntity="Page", inversedBy="blocks")
      * @ORM\JoinColumn(name="page_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $page;
