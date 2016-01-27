@@ -110,12 +110,45 @@ class PageManager extends BasePageManager implements PageManagerInterface
         }
 
         foreach ($this->pages[$site_id] as $page) {
-            if ($page->getUrl() === $url) {
+            if ($this->matches($page, $url)) {
                 return $page;
             }
         }
 
         return null;
+    }
+
+    /**
+     * Test the $page if it matches the $url
+     *
+     * @param Page $page
+     * @param $url
+     * @return bool
+     */
+    protected function matches(Page $page, $url)
+    {
+        $purl = $page->getUrl();
+        $pattern = '#^'.$purl.'$#';
+        preg_match_all('/{[a-z]+}/', $purl, $matches);
+
+        $tokens = $matches[0];
+        foreach ($tokens as $token) {
+            $pattern = preg_replace('/'.$token.'/', '(.+)', $pattern);
+        }
+
+        if (preg_match($pattern, $url, $matches)) {
+            // remove brackets from tokens
+            $tokens = array_map(function ($a) { return substr($a, 1, -1); }, $tokens);
+
+            // remove first (whole) match
+            array_shift($matches);
+
+            $page->parameters = array_combine($tokens, $matches);
+
+            return true;
+        }
+
+        return false;
     }
 
     public function findOneById($site, $id)

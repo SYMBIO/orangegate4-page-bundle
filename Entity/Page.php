@@ -236,6 +236,8 @@ class Page implements PageInterface
      */
     protected $translations;
 
+    public $parameters = array();
+
     protected static $slugifyMethod;
 
     /**

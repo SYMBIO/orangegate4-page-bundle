@@ -54,13 +54,12 @@ class CmsPageRouter extends BaseCmsPageRouter
 
         $cms->setCurrentPage($page);
 
-        return array(
+        return array_merge($page->parameters ?: array(), array(
             '_controller' => $page->isHybrid() ? $this->getControllerForRouteName($page->getRouteName()) : 'sonata.page.page_service_manager:execute',
             '_route'      => $page->isHybrid() ? $page->getRouteName() : PageInterface::PAGE_ROUTE_CMS_NAME,
             'page'        => $page,
             'path'        => $pathinfo,
-            'params'      => array(),
-        );
+        ));
     }
 
     // agrofert_agrofert_career_list -> CareerController::listAction
@@ -104,7 +103,7 @@ class CmsPageRouter extends BaseCmsPageRouter
             throw new \RuntimeException(sprintf('Page "%d" has no url or customUrl.', $page->getId()));
         }
 
-        $url = $this->decorateUrl($url, $parameters, $referenceType);
+        $url = $this->customDecorateUrl($page->getSite(), $url, $parameters, $referenceType);
 
         if ($page->getSite() !== $this->siteSelector->retrieve()) {
             $url = str_replace($this->siteSelector->retrieve()->getRelativePath(), $page->getSite()->getRelativePath(), $url);
@@ -147,6 +146,14 @@ class CmsPageRouter extends BaseCmsPageRouter
             $url = $this->getRelativePath($this->context->getPathInfo(), $url);
         } else {
             $url = sprintf('%s%s%s', $schemeAuthority, str_replace($this->siteSelector->retrieve()->getRelativePath(), $site->getRelativePath(), $this->context->getBaseUrl()), $url);
+        }
+
+        foreach ($parameters as $k => $v) {
+            $pattern = '{'.$k.'}';
+            if (strpos($url, $pattern) !== false) {
+                $url = str_replace($pattern, $v, $url);
+                unset($parameters[$k]);
+            }
         }
 
         if (count($parameters) > 0) {
