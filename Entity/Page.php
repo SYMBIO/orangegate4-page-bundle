@@ -1225,6 +1225,11 @@ class Page implements PageInterface
      */
     public function __toString()
     {
+        foreach ($this->translations as $translation) {
+            if ($translation->getName()) {
+                return $translation->getName();
+            }
+        }
         return $this->getName() ?: '-';
     }
 
