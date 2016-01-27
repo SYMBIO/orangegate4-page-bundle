@@ -27,6 +27,9 @@ class BlockAdminController extends Controller
             $this->get('orangegate.site.pool')->getCurrentSite($request);
         }
 
+        $translatableListener = $this->get('gedmo.listener.translatable');
+        $translatableListener->setTranslatableLocale($object->getSite()->getLocale());
+
         parent::preEdit($request, $object);
     }
 }
