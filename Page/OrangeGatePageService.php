@@ -72,7 +72,10 @@ class OrangeGatePageService extends BasePageService
         $languageVersion = $page->getSite()->getLanguageVersion($locale);
         $siteTitle = $languageVersion->getTitle() ?: $page->getSite()->getName();
 
-        if (!$page->getParent()) {
+        // if somebody change title manualy, add only site suffix
+        if ($this->seoPage->getTitle() != $page->getSite()->getTitle()) {
+            $title = $this->seoPage->getTitle().' - '.$siteTitle;
+        } elseif (!$page->getParent()) {
             $title = $siteTitle;
         } else {
             if ($page->getTitle()) {
@@ -83,6 +86,7 @@ class OrangeGatePageService extends BasePageService
                 $title = $siteTitle;
             }
         }
+
         $this->seoPage->setTitle($title);
         $this->seoPage->addMeta('property', 'og:title', $title);
 
