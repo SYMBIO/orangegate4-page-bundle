@@ -558,4 +558,11 @@ class Snapshot implements SnapshotInterface
     {
         return $this->translations;
     }
+
+    public function disableChildrenLazyLoading()
+    {
+        if ($this->children instanceof Proxy) {
+            $this->children->setInitialized(true);
+        }
+    }
 }

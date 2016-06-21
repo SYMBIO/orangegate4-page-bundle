@@ -193,6 +193,8 @@ class Transformer extends BaseTransformer
         $updatedAt->setTimestamp($content['updated_at']);
         $page->setUpdatedAt($updatedAt);
 
+        $page->parameters = $snapshot->getPage()->parameters;
+
         foreach ($snapshot->getTranslations() as $locale => $strans) {
             $ptrans = new PageTranslation();
             $ptrans->setObject($page);
