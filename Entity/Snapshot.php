@@ -13,7 +13,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="page__snapshot")
+ * @ORM\Table(name="page__snapshot",indexes={@ORM\Index(name="load_snapshots_idx", columns={"enabled", "publication_date_start", "publication_date_end", "site_id"})})
  */
 class Snapshot implements SnapshotInterface
 {
@@ -132,6 +132,11 @@ class Snapshot implements SnapshotInterface
      * @ORM\JoinColumn(name="page_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $page;
+
+    /**
+     * @ORM\Column(name="page_id", type="integer", nullable=true)
+     */
+    protected $pageId;
 
     /**
      * @ORM\OneToMany(targetEntity="SnapshotTranslation", mappedBy="object", indexBy="locale", cascade={"all"}, orphanRemoval=true)
