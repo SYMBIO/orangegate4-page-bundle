@@ -31,7 +31,6 @@ class SnapshotManager extends ParentManager implements SnapshotManagerInterface
               SELECT s,p
               FROM %s s
               INNER JOIN s.page p
-              INDEX BY s.pageId
               WHERE
                 s.enabled = 1
                   AND
@@ -54,7 +53,12 @@ class SnapshotManager extends ParentManager implements SnapshotManagerInterface
             $site->getLocale()
         );
 
-        $this->snapshots = $query->execute();
+        $snapshots = array();
+        foreach ($query->execute() as $snap) {
+            $snapshots[$snap->getPage()->getId()] = $snap;
+        }
+
+        $this->snapshots = $snapshots;
     }
 
     public function findOneByUrl($url)
@@ -131,10 +135,9 @@ class SnapshotManager extends ParentManager implements SnapshotManagerInterface
     {
         // if we don't know the site, we've to find it by page/snapshot
         if (!isset($criteria['site']) && isset($criteria['pageId']) && !$this->snapshots) {
-            $site_id = $this->getEntityManager()->createQuery(sprintf("SELECT s.site.id FROM %s WHERE s.page_id = %s", $this->getClass(), $criteria['pageId']))->getSingleScalarResult();
-            var_dump($site_id);exit;
-            if ($snapshot) {
-                $criteria['site'] = $snapshot->getSite();
+            $site_id = $this->getEntityManager()->createQuery(sprintf("SELECT s.site.id FROM %s WHERE s.page = %s", $this->getClass(), $criteria['pageId']))->getSingleScalarResult();
+            if ($site_id) {
+                $criteria['site'] = $site_id;
             } else {
                 return null;
             }

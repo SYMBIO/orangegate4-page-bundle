@@ -134,11 +134,6 @@ class Snapshot implements SnapshotInterface
     protected $page;
 
     /**
-     * @ORM\Column(name="page_id", type="integer", nullable=true)
-     */
-    protected $pageId;
-
-    /**
      * @ORM\OneToMany(targetEntity="SnapshotTranslation", mappedBy="object", indexBy="locale", cascade={"all"}, orphanRemoval=true)
      * @Assert\Valid
      */
