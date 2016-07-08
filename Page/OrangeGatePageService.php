@@ -100,6 +100,11 @@ class OrangeGatePageService extends BasePageService
             $this->seoPage->addMeta('name', 'keywords', $languageVersion->getMetaKeywords());
         }
 
+        if ($page->getOgImage()) {
+            //$ogImageUrl = $this->get('sonata.media.twig.extension')->path($ogImage, 'og_image'); TODO
+            $this->seoPage->addMeta('property', 'og:image', strpos($page->getOgImage(), '://') !== false ? $page->getOgImage() : sprintf('%s://%s%s', isset($_SERVER['HTTPS']) ? 'https' : 'http', $_SERVER['HTTP_HOST'], $page->getOgImage()));
+        }
+
         $this->seoPage->addMeta('property', 'og:site_name', $languageVersion->getTitle());
         $this->seoPage->addMeta('property', 'og:url', $request->getUri());
         $this->seoPage->addMeta('property', 'og:type', 'website');

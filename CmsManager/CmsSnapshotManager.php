@@ -99,27 +99,21 @@ class CmsSnapshotManager extends BaseCmsPageManager
      */
     protected function getPageBy(SiteInterface $site = null, $fieldName, $value)
     {
-        if ('id' == $fieldName) {
+        if ('id' === $fieldName) {
             $fieldName = 'pageId';
             $id = $value;
-        } elseif ($site && isset($this->pageReferences[$site->getId()][$fieldName][$value])) {
-            $id = $this->pageReferences[$site->getId()][$fieldName][$value];
         } else {
             $id = null;
         }
 
         if (null === $id || !$site || ($site && !isset($this->pages[$site->getId()][$id]))) {
-            if ($fieldName === 'url') {
-                $snapshot = $this->snapshotManager->findOneByUrl($site, $value);
-            } else {
-                $parameters = array($fieldName => $value);
+            $parameters = array($fieldName => $value);
 
-                if ($site) {
-                    $parameters['site'] = $site;
-                }
-
-                $snapshot = $this->snapshotManager->findEnableSnapshot($parameters);
+            if ($site) {
+                $parameters['site'] = $site;
             }
+
+            $snapshot = $this->snapshotManager->findEnableSnapshot($parameters);
 
             if (!$snapshot) {
                 throw new PageNotFoundException();
@@ -129,16 +123,11 @@ class CmsSnapshotManager extends BaseCmsPageManager
 
             $site = $page->getSite();
 
-            $this->pages[$site->getId()][$id] = false;
-
             if ($page) {
+
                 $this->loadBlocks($page);
 
                 $id = $page->getId();
-
-                if ($fieldName != 'id') {
-                    $this->pageReferences[$site->getId()][$fieldName][$value] = $id;
-                }
 
                 $this->pages[$site->getId()][$id] = $page;
             }

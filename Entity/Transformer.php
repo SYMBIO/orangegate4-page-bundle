@@ -153,6 +153,9 @@ class Transformer extends BaseTransformer
      */
     public function load(SnapshotInterface $snapshot)
     {
+        /**
+         * @var Page $page
+         */
         $page = $this->pageManager->create();
 
         $page->setRouteName($snapshot->getRouteName());
@@ -197,6 +200,10 @@ class Transformer extends BaseTransformer
         $updatedAt->setTimestamp($content['updated_at']);
         $page->setUpdatedAt($updatedAt);
 
+        $page->parameters = $snapshot->getPage()->parameters;
+
+        // it's not necessary to gather translations, the right one is in main object thanks to translation walker
+        /*
         foreach ($snapshot->getTranslations() as $locale => $strans) {
             $ptrans = new PageTranslation();
             $ptrans->setObject($page);
@@ -220,6 +227,7 @@ class Transformer extends BaseTransformer
 
             $page->addTranslation($ptrans);
         }
+        */
 
         return $page;
     }

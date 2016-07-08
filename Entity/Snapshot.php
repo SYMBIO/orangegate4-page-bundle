@@ -13,7 +13,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="page__snapshot")
+ * @ORM\Table(name="page__snapshot",indexes={@ORM\Index(name="load_snapshots_idx", columns={"enabled", "publication_date_start", "publication_date_end", "site_id"})})
  */
 class Snapshot implements SnapshotInterface
 {
@@ -557,5 +557,12 @@ class Snapshot implements SnapshotInterface
     public function getTranslations()
     {
         return $this->translations;
+    }
+
+    public function disableChildrenLazyLoading()
+    {
+        if ($this->children instanceof Proxy) {
+            $this->children->setInitialized(true);
+        }
     }
 }

@@ -226,6 +226,11 @@ class Page implements PageInterface
     protected $icon;
 
     /**
+     * @ORM\Column(name="og_image", type="string", length=255, nullable=true)
+     */
+    protected $ogImage;
+
+    /**
      * @ORM\Column(name="css_class", type="string", length=255, nullable=true)
      */
     protected $cssClass;
@@ -510,6 +515,18 @@ class Page implements PageInterface
     public function getIcon()
     {
         return $this->icon;
+    }
+
+    public function setOgImage($ogImage = null)
+    {
+        $this->ogImage = $ogImage;
+
+        return $this;
+    }
+
+    public function getOgImage()
+    {
+        return $this->ogImage;
     }
 
     public function getTranslations()

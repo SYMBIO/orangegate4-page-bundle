@@ -816,6 +816,10 @@
         <source>form.label_route_name</source>
         <target>Akce stránky</target>
       </trans-unit>
+      <trans-unit id="form.label_og_image">
+        <source>form.label_og_image</source>
+        <target>OG image</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

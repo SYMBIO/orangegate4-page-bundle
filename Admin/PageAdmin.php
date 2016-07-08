@@ -211,6 +211,7 @@ class PageAdmin extends BaseAdmin
                         'hide_context' => true,
                     )
                 ))
+                ->add('ogImage', null, array('required' => false))
                 ->add('position')
                 ->add('cssClass')
             ->end();

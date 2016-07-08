@@ -2,7 +2,7 @@
 
 namespace Symbio\OrangeGate\PageBundle\Route;
 
-use Symbio\OrangeGate\PageBundle\Entity\Page;
+use Sonata\PageBundle\Model\SnapshotPageProxy;
 use Symfony\Cmf\Component\Routing\ChainedRouterInterface;
 use Symfony\Cmf\Component\Routing\VersatileGeneratorInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
@@ -55,9 +55,7 @@ class CmsPageRouter extends BaseCmsPageRouter
 
         $cms->setCurrentPage($page);
 
-        $pageObject = $page instanceof Page ? $page : $page->getPage();
-
-        return array_merge($pageObject->parameters ?: array(), array(
+        return array_merge(($page instanceof SnapshotPageProxy ? $page->getPage()->parameters : $page->parameters) ?: array(), array(
             '_controller' => $page->isHybrid() ? $this->getControllerForRouteName($page->getRouteName()) : 'sonata.page.page_service_manager:execute',
             '_route'      => $page->isHybrid() ? $page->getRouteName() : PageInterface::PAGE_ROUTE_CMS_NAME,
             'page'        => $page,
