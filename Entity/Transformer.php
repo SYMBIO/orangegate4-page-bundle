@@ -104,6 +104,7 @@ class Transformer extends BaseTransformer
             $content['parent_id']        = $page->getParent() ? $page->getParent()->getId() : null;
             $content['target_id']        = $page->getTarget() ? $page->getTarget()->getId() : null;
             $content['cssClass']         = $page->getCssClass();
+            $content['customUrl']        = $ptrans->getCustomUrl();
 
             $content['blocks'] = array();
             foreach ($page->getBlocks() as $block) {
@@ -184,6 +185,9 @@ class Transformer extends BaseTransformer
         if (array_key_exists('cssClass', $content)) {
             $page->setCssClass($content['cssClass']);
         }
+        if (array_key_exists('customUrl', $content)) {
+            $page->setCustomUrl($content['customUrl']);
+        }
 
         $createdAt = new \DateTime;
         $createdAt->setTimestamp($content['created_at']);
@@ -210,6 +214,9 @@ class Transformer extends BaseTransformer
             $ptrans->setMetaKeyword($content['meta_keyword']);
             $ptrans->setName($content['name']);
             $ptrans->setSlug($content['slug']);
+            if (array_key_exists('customUrl', $content)) {
+                $ptrans->setCustomUrl($content['customUrl']);
+            }
 
             $page->addTranslation($ptrans);
         }
