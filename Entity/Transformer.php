@@ -72,6 +72,7 @@ class Transformer extends BaseTransformer
         $content['parent_id']        = $page->getParent() ? $page->getParent()->getId() : null;
         $content['target_id']        = $page->getTarget() ? $page->getTarget()->getId() : null;
         $content['cssClass']         = $page->getCssClass();
+        $content['ogImage']          = $page->getOgImage();
 
         $content['blocks'] = array();
         foreach ($page->getBlocks() as $block) {
@@ -104,6 +105,7 @@ class Transformer extends BaseTransformer
             $content['parent_id']        = $page->getParent() ? $page->getParent()->getId() : null;
             $content['target_id']        = $page->getTarget() ? $page->getTarget()->getId() : null;
             $content['cssClass']         = $page->getCssClass();
+            $content['ogImage']          = $page->getOgImage();
             $content['customUrl']        = $ptrans->getCustomUrl();
 
             $content['blocks'] = array();
@@ -187,6 +189,9 @@ class Transformer extends BaseTransformer
         $page->setRequestMethod($content['request_method']);
         if (array_key_exists('cssClass', $content)) {
             $page->setCssClass($content['cssClass']);
+        }
+        if (array_key_exists('ogImage', $content)) {
+            $page->setOgImage($content['ogImage']);
         }
         if (array_key_exists('customUrl', $content)) {
             $page->setCustomUrl($content['customUrl']);
