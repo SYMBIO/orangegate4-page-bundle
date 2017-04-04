@@ -63,24 +63,26 @@ class SnapshotManager extends ParentManager implements SnapshotManagerInterface
 
     public function findOneByUrl($url)
     {
+        $matchedSnapshots = array();
         foreach ($this->snapshots as $snapshot) {
             if ($this->matches($snapshot, $url)) {
-                return $snapshot;
+                $matchedSnapshots[] = $snapshot;
             }
         }
 
-        return null;
+        return $matchedSnapshots ? $this->getLatestSnapshot($matchedSnapshots) : null;
     }
 
     public function findOneByRouteName($routeName)
     {
+        $matchedSnapshots = array();
         foreach ($this->snapshots as $snapshot) {
             if ($snapshot->getRouteName() === $routeName) {
-                return $snapshot;
+                $matchedSnapshots[] = $snapshot;
             }
         }
 
-        return null;
+        return $matchedSnapshots ? $this->getLatestSnapshot($matchedSnapshots) : null;
     }
 
     public function findOneByPageId($id)
@@ -156,5 +158,21 @@ class SnapshotManager extends ParentManager implements SnapshotManagerInterface
         } else {
             return null;
         }
+    }
+
+    /**
+     * @param Snapshot[] $snapshots
+     * @return Snapshot
+     */
+    protected function getLatestSnapshot($snapshots)
+    {
+        /** @var Snapshot $lastSnapshot */
+        $lastSnapshot = null;
+        foreach($snapshots as $snapshot) {
+            if (!$lastSnapshot || $snapshot->getCreatedAt() > $lastSnapshot->getCreatedAt()) {
+                $lastSnapshot = $snapshot;
+            }
+        }
+        return $lastSnapshot;
     }
 }
