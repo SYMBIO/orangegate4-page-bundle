@@ -86,7 +86,7 @@ class RedirectListener implements EventSubscriberInterface
         }
 
         if ($match_host) {
-            $source_regex = $parsed_src['path'];
+            $source_regex = $parsed_src['path'] . (isset($parsed_src['query']) && $parsed_src['query'] ? '?' . $parsed_src['query'] : '');
         } else {
             $source_regex = $source_url;
         }

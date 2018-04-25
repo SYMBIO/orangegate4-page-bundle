@@ -99,7 +99,7 @@ class RedirectAdmin extends BaseAdmin
             ->add('sourceUrl')
             ->add('destinationUrl')
             ->add('note')
-            ->add('position')
+            ->add('position', null, ['required' => false])
             ->end();
     }
 }
