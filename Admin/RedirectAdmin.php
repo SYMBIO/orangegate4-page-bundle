@@ -95,6 +95,7 @@ class RedirectAdmin extends BaseAdmin
 
         $formMapper
             ->add('enabled')
+            ->add('type', 'choice' , ['choices' => [301=>301,302=>302]])
             ->add('sourceUrl')
             ->add('destinationUrl')
             ->add('note')
