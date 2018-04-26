@@ -14,7 +14,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="page__redirect",indexes={@ORM\Index(name="enabled_idx", columns={"enabled"})})
+ * @ORM\Table(name="page__redirect",indexes={
+ *     @ORM\Index(name="enabled_idx", columns={"enabled"}),
+ *     @ORM\Index(name="source_url_idx", columns={"source_url"})
+ * })
  */
 class Redirect
 {
@@ -46,7 +49,7 @@ class Redirect
     /**
      * @ORM\Column(type="integer", length=255)
      */
-    protected $type = 302;
+    protected $type = 301;
 
     /**
      * @ORM\Column(type="integer")

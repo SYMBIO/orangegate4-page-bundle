@@ -37,7 +37,7 @@ services:
         class: Symbio\OrangeGate\PageBundle\Admin\RedirectAdmin
         tags:
             - { name: sonata.admin, manager_type: orm, group: sonata_page, label: redirect, label_catalogue: %sonata.page.admin.page.translation_domain%, label_translator_strategy: sonata.admin.label.strategy.underscore }
-        arguments: [null, Symbio\OrangeGate\PageBundle\Entity\Redirect, null]
+        arguments: [null, Symbio\OrangeGate\PageBundle\Entity\Redirect, null, @doctrine.orm.default_entity_manager]
         calls:
             - [ setTranslationDomain, [ SonataPageBundle ] ]
 
