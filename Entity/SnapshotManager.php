@@ -155,6 +155,8 @@ class SnapshotManager extends ParentManager implements SnapshotManagerInterface
             return $this->findOneByUrl($criteria['url']);
         } elseif (isset($criteria['routeName'])) {
             return $this->findOneByRouteName($criteria['routeName']);
+        } elseif (isset($criteria['pageAlias'])) {
+            return $this->findOneBy(['pageAlias' => $criteria['pageAlias']]);
         } else {
             return null;
         }
