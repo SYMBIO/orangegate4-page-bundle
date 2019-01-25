@@ -44,7 +44,7 @@ class RedirectAdmin extends BaseAdmin
      */
     protected $siteManager;
 
-    public function __construct(string $code, string $class, string $baseControllerName, EntityManager $entityManager)
+    public function __construct($code, $class, $baseControllerName, EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
 
